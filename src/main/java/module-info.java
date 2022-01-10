@@ -3,8 +3,9 @@ module com.example.email {
     requires javafx.fxml;
 
 
-    opens com.example.email to javafx.fxml;
-    exports com.example.email;
+    opens com.example.email.client to javafx.fxml;
+    exports com.example.email.client;
+    /*
     exports com.example.email.Main;
     opens com.example.email.Main to javafx.fxml;
     exports com.example.email.Controller;
@@ -13,4 +14,5 @@ module com.example.email {
     opens com.example.email.Client to javafx.fxml;
     exports com.example.email.Server;
     opens com.example.email.Server to javafx.fxml;
+*/
 }

@@ -1,4 +1,4 @@
-package com.example.email.Server;
+package com.example.email.server;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

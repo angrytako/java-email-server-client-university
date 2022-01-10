@@ -1,4 +1,4 @@
-package com.example.email.Server;
+package com.example.email.server;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -23,6 +23,7 @@ public class ServerListener extends Thread {
             while(true){
                 Socket socket = serverSocket.accept();
                 log.appendText("-New client connected");
+
 
             }
         } catch (IOException e) {
