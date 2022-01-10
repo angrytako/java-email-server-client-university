@@ -1,4 +1,4 @@
-package com.example.email;
+package com.example.email.Server;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;

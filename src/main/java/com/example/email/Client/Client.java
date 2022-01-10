@@ -1,4 +1,4 @@
-package com.example.email;
+package com.example.email.Client;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
