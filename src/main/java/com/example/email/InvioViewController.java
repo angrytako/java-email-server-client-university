@@ -1,6 +1,7 @@
 package com.example.email;
 
 import com.example.email.Model.Email;
+import com.example.email.Model.Utente;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -36,11 +37,16 @@ public class InvioViewController implements Initializable {
     TextArea testoTA;
     @FXML
     AnchorPane masterAp, invioAp;
+    @FXML
+    Label nomeUtente;
 
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Utente utente = new Utente("Enrico");  //questa può essere cambiata, quando l'ho messo non mi era chiaro come lanciare i client
+
+        nomeUtente.setText(utente.getNome());
         try {
             postaSp = postaRicevuta.load();
         }catch (IOException err){

@@ -7,14 +7,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class Client extends Application {
+public class Server extends Application {
 
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Client.class.getResource("invio-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Client.class.getResource("server-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("MailExp");
+        stage.setTitle("Server");
         stage.setScene(scene);
         stage.show();
     }
