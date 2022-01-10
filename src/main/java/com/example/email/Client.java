@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class Client extends Application {
 
@@ -20,6 +21,12 @@ public class Client extends Application {
     }
 
     public static void main(String[] args) {
+        /*
+        UUID uuid = UUID.randomUUID();
+        String uuidAsString = uuid. toString();
+        System. out. println("Your UUID is: " + uuidAsString);
+        */
+         
         launch();
     }
 }
