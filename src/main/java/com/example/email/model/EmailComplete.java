@@ -1,13 +1,23 @@
 package com.example.email.model;
 
+import javafx.beans.property.IntegerPropertyBase;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleStringProperty;
+
 import java.util.Date;
 
 public class EmailComplete extends Email{
-    private int ID;
-    private String mittente;
-    private Date data;
-    public EmailComplete(String oggetto, String destinatari, String testo) {
-        super(oggetto, destinatari, testo);
+    private IntegerPropertyBase ID;
+    private SimpleStringProperty mittente;
+    private Property<Date> data;
 
+    public EmailComplete(Email emailSmall, IntegerPropertyBase ID,
+                         SimpleStringProperty mittente, Property<Date> data) {
+        super(emailSmall.getOggetto(), emailSmall.getDestinatari(), emailSmall.getTesto());
+        this.ID = ID;
+        this.mittente = mittente;
+        this.data = data;
     }
+
+
 }

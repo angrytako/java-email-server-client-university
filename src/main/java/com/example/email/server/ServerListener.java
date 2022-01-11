@@ -12,6 +12,7 @@ public class ServerListener extends Thread {
     @FXML
     TextArea log;
     public ServerListener(TextArea log, int port) {
+        setDaemon(true);
         this.log = log;
         this.port=port;
     }
