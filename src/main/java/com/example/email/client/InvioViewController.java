@@ -1,5 +1,6 @@
 package com.example.email.client;
 
+import com.example.email.Client;
 import com.example.email.model.Email;
 import com.example.email.model.Utente;
 import javafx.animation.PauseTransition;
