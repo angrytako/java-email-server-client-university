@@ -17,6 +17,7 @@ public class Server extends Application {
         stage.setTitle("Server");
         stage.setScene(scene);
         stage.show();
+
     }
 
     public static void main(String[] args) {

@@ -22,7 +22,7 @@ public class ServerListener extends Thread {
             ServerSocket serverSocket = new ServerSocket(port);
             while(true){
                 Socket socket = serverSocket.accept();
-                log.appendText("-New client connected");
+                log.appendText("-New client connected\n");
 
 
             }

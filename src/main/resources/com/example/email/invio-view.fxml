@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane fx:id="masterAp" prefHeight="582.0" prefWidth="948.0" xmlns="http://javafx.com/javafx/11.0.2"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.email.client.InvioViewController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.email.client.ClientController">
    <children>
       <AnchorPane fx:id="invioAp" layoutY="106.0" prefHeight="484.0" prefWidth="948.0" AnchorPane.bottomAnchor="4.0"
                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0">

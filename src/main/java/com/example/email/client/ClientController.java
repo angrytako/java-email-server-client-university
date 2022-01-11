@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class InvioViewController implements Initializable {
+public class ClientController implements Initializable {
     private final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
     private final FXMLLoader postaRicevuta = new FXMLLoader(Client.class.getResource("posta-view.fxml"));
     private enum statesEnum { INVIO, POSTA_RICEVUTA, POSTA_IN_USCITA };
@@ -44,8 +44,12 @@ public class InvioViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Utente utente = new Utente("Enrico");  //questa può essere cambiata, quando l'ho messo non mi era chiaro come lanciare i client
-
         nomeUtente.setText(utente.getEmailAddress());
+        /*connessione al server gestita da un nuovo thread che condivide l'oggetto utente, in questo modo i dati che vengono ricevuti
+        * dal thread vanno ad aggiornare anche il l'interfaccia grafica che è in bunding con l'oggetto utente*/
+        ServerConnession connession = new ServerConnession(utente,"172.28.230.162", 6868);
+        connession.start();
+
         try {
             postaSp = postaRicevuta.load();
         }catch (IOException err){
