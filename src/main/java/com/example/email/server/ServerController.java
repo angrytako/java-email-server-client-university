@@ -1,11 +1,9 @@
-package com.example.email;
+package com.example.email.server;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.URL;
 import java.util.ResourceBundle;
 

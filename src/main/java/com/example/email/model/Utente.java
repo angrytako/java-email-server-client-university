@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Utente {
-    private String nome;  //es@gmail.com
+    private String emailAddress;  //es@gmail.com
     private List emails;
 
     public Utente(String nome) {
-        this.nome = nome;
+        this.emailAddress = nome;
         this.emails = new ArrayList<EmailComplete>();
     }
 
-    public String getNome() {
-        return nome;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 }

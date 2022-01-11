@@ -1,4 +1,4 @@
-package com.example.email;
+package com.example.email.client;
 
 import com.example.email.Client;
 import com.example.email.model.Email;
@@ -45,7 +45,7 @@ public class InvioViewController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Utente utente = new Utente("Enrico");  //questa può essere cambiata, quando l'ho messo non mi era chiaro come lanciare i client
 
-        nomeUtente.setText(utente.getNome());
+        nomeUtente.setText(utente.getEmailAddress());
         try {
             postaSp = postaRicevuta.load();
         }catch (IOException err){
