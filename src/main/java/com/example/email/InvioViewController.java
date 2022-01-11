@@ -1,9 +1,9 @@
 package com.example.email;
 
-import com.example.email.Model.Email;
-import com.example.email.Model.Utente;
+import com.example.email.Client;
+import com.example.email.model.Email;
+import com.example.email.model.Utente;
 import javafx.animation.PauseTransition;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +18,6 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class InvioViewController implements Initializable {

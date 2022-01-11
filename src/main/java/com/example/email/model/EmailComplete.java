@@ -1,4 +1,4 @@
-package com.example.email.Model;
+package com.example.email.model;
 
 import java.util.Date;
 

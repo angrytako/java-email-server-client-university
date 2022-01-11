@@ -1,4 +1,4 @@
-package com.example.email.Model;
+package com.example.email.model;
 
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
