@@ -25,7 +25,7 @@ public class Client extends Application {
         String uuidAsString = uuid. toString();
         System. out. println("Your UUID is: " + uuidAsString);
         */
-         
+
         launch();
     }
 }

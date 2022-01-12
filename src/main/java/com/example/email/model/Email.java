@@ -6,7 +6,10 @@ import javafx.beans.property.SimpleStringProperty;
 import java.io.Serializable;
 
 public class Email implements Serializable {
-    private SimpleStringProperty oggetto, destinatari, testo;
+    private SimpleStringProperty oggetto;
+    private SimpleStringProperty destinatari;
+    private SimpleStringProperty testo;
+
     public Email(String oggetto, String destinatari, String testo) {
         this.oggetto = new SimpleStringProperty();
         this.destinatari = new SimpleStringProperty();

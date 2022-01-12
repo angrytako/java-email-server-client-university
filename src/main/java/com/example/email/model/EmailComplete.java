@@ -1,23 +1,36 @@
 package com.example.email.model;
 
-import javafx.beans.property.IntegerPropertyBase;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleStringProperty;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
-import java.util.Date;
+public class EmailComplete implements Serializable {
+    private Integer ID;
+    private String mittente;
+    private String destinatari;
+    private String oggetto;
+    private String testo;
+    private  LocalDateTime data;
 
-public class EmailComplete extends Email{
-    private IntegerPropertyBase ID;
-    private SimpleStringProperty mittente;
-    private Property<Date> data;
 
-    public EmailComplete(Email emailSmall, IntegerPropertyBase ID,
-                         SimpleStringProperty mittente, Property<Date> data) {
-        super(emailSmall.getOggetto(), emailSmall.getDestinatari(), emailSmall.getTesto());
+    public EmailComplete(Email emailSmall, Integer ID,
+                         String mittente, LocalDateTime data) {
+        this.oggetto = emailSmall.getOggetto();
+        this.destinatari = emailSmall.getDestinatari();
+        this.testo= emailSmall.getTesto();
         this.ID = ID;
         this.mittente = mittente;
         this.data = data;
     }
 
-
+    @Override
+    public String toString() {
+        return "EmailComplete{" +
+                "ID=" + ID +
+                ", mittente='" + mittente + '\'' +
+                ", destinatari='" + destinatari + '\'' +
+                ", oggetto='" + oggetto + '\'' +
+                ", testo='" + testo + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }

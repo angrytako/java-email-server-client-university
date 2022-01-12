@@ -5,14 +5,20 @@ import java.util.List;
 
 public class Utente {
     private String emailAddress;  //es@gmail.com
-    private List emails;
+    private List<EmailComplete> emails;
 
     public Utente(String nome) {
         this.emailAddress = nome;
         this.emails = new ArrayList<EmailComplete>();
     }
 
-    public String getEmailAddress() {
+    public synchronized String getEmailAddress() {
         return emailAddress;
     }
+
+    public void addEmail(EmailComplete email){
+        emails.add(email);
+    }
+
+
 }

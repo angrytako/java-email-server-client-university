@@ -2,6 +2,7 @@ package com.example.email.client;
 
 import com.example.email.Client;
 import com.example.email.model.Email;
+import com.example.email.model.EmailComplete;
 import com.example.email.model.Utente;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
@@ -17,7 +18,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class ClientController implements Initializable {
@@ -27,6 +32,11 @@ public class ClientController implements Initializable {
     private statesEnum state;
     private SplitPane postaSp;
     private Email email;
+    private Utente utente;
+    private Socket socket;
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
+
 
     @FXML
     TextField oggettoTF;
@@ -43,12 +53,22 @@ public class ClientController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Utente utente = new Utente("Enrico");  //questa può essere cambiata, quando l'ho messo non mi era chiaro come lanciare i client
+
+        utente = new Utente("Enrico");  //questa può essere cambiata, quando l'ho messo non mi era chiaro come lanciare i client
         nomeUtente.setText(utente.getEmailAddress());
-        /*connessione al server gestita da un nuovo thread che condivide l'oggetto utente, in questo modo i dati che vengono ricevuti
-        * dal thread vanno ad aggiornare anche il l'interfaccia grafica che è in bunding con l'oggetto utente*/
-        ServerConnession connession = new ServerConnession(utente,"172.28.230.162", 6868);
-        connession.start();
+        /*il controller crea la connessione con il Server, successivamente due thread di occupano di lettura e scrittura*/
+
+        socket = startServerConnession("172.28.230.162", 6868);
+
+        try {
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            outputStream.flush();
+            inputStream = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        InputServer inputServer = new InputServer(utente,socket,inputStream);
+        inputServer.start();
 
         try {
             postaSp = postaRicevuta.load();
@@ -69,7 +89,6 @@ public class ClientController implements Initializable {
     }
 
     public void invia(ActionEvent e){
-        System.out.println(email.getOggetto() + " , \n"+ email.getDestinatari() + " , \n" + email.getTesto());
         if(email.getOggetto().length() == 0){
             displayErr(oggettoTF);
             oggettoTF.requestFocus();
@@ -85,6 +104,14 @@ public class ClientController implements Initializable {
             testoTA.requestFocus();
             return;
         }
+
+
+        EmailComplete emailToServer = new EmailComplete(email,null,utente.getEmailAddress(), LocalDateTime.now());
+        /*questo da thread può diventare collable così si possono gestire le eccezioni*/
+        System.out.println(emailToServer);
+        OutToServer invio = new OutToServer(emailToServer,socket,outputStream);
+        invio.start();
+        utente.addEmail(emailToServer);
     }
 
 
@@ -146,6 +173,20 @@ public class ClientController implements Initializable {
             n.setStyle("-fx-border-style: none");
         });
         wait.play();
+    }
+
+
+    public Socket startServerConnession(String host ,int port ) {
+        Socket so;
+        try {
+            so = new Socket(host, port);
+            System.out.println(so);
+            return so;
+        } catch (IOException e) {
+            System.out.println(e);
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

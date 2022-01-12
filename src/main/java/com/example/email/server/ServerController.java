@@ -18,6 +18,5 @@ public class ServerController implements Initializable {
         log.appendText("-Server is starting...\n");
         ServerListener server = new ServerListener(log,6868);  //6868 is the port
         server.start();
-        log.appendText("-Server ON\n");
     }
 }
