@@ -1,5 +1,7 @@
 package com.example.email.model;
 
+import javafx.beans.property.Property;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class Utente {
         return emailAddress;
     }
 
-    public void addEmail(EmailComplete email){
+    public synchronized void addEmail(EmailComplete email){
         emails.add(email);
     }
 

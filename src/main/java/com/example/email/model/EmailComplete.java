@@ -22,6 +22,14 @@ public class EmailComplete implements Serializable {
         this.data = data;
     }
 
+    public String getMittente() {
+        return mittente;
+    }
+
+    public String getDestinatari() {
+        return destinatari;
+    }
+
     @Override
     public String toString() {
         return "EmailComplete{" +

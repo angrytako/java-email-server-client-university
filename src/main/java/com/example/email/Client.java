@@ -1,11 +1,14 @@
 package com.example.email;
 
+import com.example.email.model.EmailComplete;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 
 public class Client extends Application {
 
@@ -26,6 +29,30 @@ public class Client extends Application {
         System. out. println("Your UUID is: " + uuidAsString);
         */
 
-        launch();
+
+        ObjectInputStream storico = null;
+        try {
+            storico = new ObjectInputStream(new FileInputStream("src/main/resources/email/sent_t@gmail.com.txt"));
+            EmailComplete email=null;
+            do {
+                email = (EmailComplete) storico.readObject();
+                if(email != null){
+                    System.out.println(email);
+                }
+            } while (email != null);
+
+            storico.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                storico.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+      //  launch();
     }
 }

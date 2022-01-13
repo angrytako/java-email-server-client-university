@@ -1,15 +1,18 @@
 package com.example.email.server;
 
+import com.example.email.model.SocketActive;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerListener extends Thread {
     private int port;
-
+    private List<SocketActive> socketsActive;
     @FXML
     TextArea log;
 
@@ -17,6 +20,7 @@ public class ServerListener extends Thread {
         setDaemon(true);
         this.log = log;
         this.port=port;
+        socketsActive = new ArrayList<SocketActive>();
     }
 
     @Override
@@ -28,10 +32,19 @@ public class ServerListener extends Thread {
             log.appendText(String.valueOf(serverSocket.toString())+"\n");
             while(true){
                 Socket socket = serverSocket.accept();
-                log.appendText("-New client connected:"  + socket);
+
+                SocketActive socketActive = new SocketActive();
+                this.socketsActive.add(socketActive);
+
+                log.appendText("-New client connected:  " );
+                /*questo dovrà essere implementato con thread pool*/
                 ServeClient client = new ServeClient(socket,log);
                 client.start();
-                log.appendText(" -> ok\n");
+                /*
+                ServeClient client = new ServeClient(socket,log,socketsActive,socketActive);
+                client.start();
+                */
+
 
             }
         } catch (IOException e) {

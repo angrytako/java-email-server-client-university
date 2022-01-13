@@ -54,7 +54,7 @@ public class ClientController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        utente = new Utente("Enrico");  //questa può essere cambiata, quando l'ho messo non mi era chiaro come lanciare i client
+        utente = new Utente("t@gmail.com");  //questa può essere cambiata, quando l'ho messo non mi era chiaro come lanciare i client
         nomeUtente.setText(utente.getEmailAddress());
         /*il controller crea la connessione con il Server, successivamente due thread di occupano di lettura e scrittura*/
 
@@ -67,7 +67,7 @@ public class ClientController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        InputServer inputServer = new InputServer(utente,socket,inputStream);
+        InputServer inputServer = new InputServer(utente,socket,inputStream,outputStream);
         inputServer.start();
 
         try {
@@ -78,7 +78,7 @@ public class ClientController implements Initializable {
         }
         state = statesEnum.INVIO;
         this.email = new Email( oggettoTF.textProperty(), destinatariTF.textProperty(), testoTA.textProperty());
-        setEmailToSend("Heheheheh", "PaperonDePaperoni@gmail.com","Lorem ipsum bla bla bla");
+        setEmailToSend("Università", "enrico@gmail.com","Enrico è il più figo");
     }
 
 
@@ -108,7 +108,6 @@ public class ClientController implements Initializable {
 
         EmailComplete emailToServer = new EmailComplete(email,null,utente.getEmailAddress(), LocalDateTime.now());
         /*questo da thread può diventare collable così si possono gestire le eccezioni*/
-        System.out.println(emailToServer);
         OutToServer invio = new OutToServer(emailToServer,socket,outputStream);
         invio.start();
         utente.addEmail(emailToServer);
