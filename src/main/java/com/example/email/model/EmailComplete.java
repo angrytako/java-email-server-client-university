@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class EmailComplete implements Serializable {
-    private Integer ID;
+
+    private String ID;
     private String mittente;
     private String destinatari;
     private String oggetto;
@@ -12,7 +13,7 @@ public class EmailComplete implements Serializable {
     private LocalDateTime data;
 
 
-    public EmailComplete(Email emailSmall, Integer ID,
+    public EmailComplete(Email emailSmall, String ID,
                          String mittente, LocalDateTime data) {
         this.oggetto = emailSmall.getOggetto();
         this.destinatari = emailSmall.getDestinatari();
@@ -21,8 +22,35 @@ public class EmailComplete implements Serializable {
         this.mittente = mittente;
         this.data = data;
     }
-    public Integer getID() {
+    public EmailComplete(Email emailSmall,
+                         String mittente, LocalDateTime data) {
+        this.oggetto = emailSmall.getOggetto();
+        this.destinatari = emailSmall.getDestinatari();
+        this.testo= emailSmall.getTesto();
+        this.mittente = mittente;
+        this.data = data;
+    }
+    public String getID() {
         return ID;
+    }
+    public String getOggetto() {
+        return oggetto;
+    }
+
+    public void setData(LocalDateTime data) {
+        this.data = data;
+    }
+
+    public String getTesto() {
+        return testo;
+    }
+
+    public LocalDateTime getData() {
+        return data;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
     public String getMittente() {
         return mittente;
@@ -34,13 +62,6 @@ public class EmailComplete implements Serializable {
 
     @Override
     public String toString() {
-        return "EmailComplete{" +
-                "ID=" + ID +
-                ", mittente='" + mittente + '\'' +
-                ", destinatari='" + destinatari + '\'' +
-                ", oggetto='" + oggetto + '\'' +
-                ", testo='" + testo + '\'' +
-                ", data=" + data +
-                '}';
+        return oggetto;
     }
 }

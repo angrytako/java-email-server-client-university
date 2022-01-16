@@ -15,9 +15,9 @@
             <Label layoutX="18.0" layoutY="30.0" prefHeight="17.0" prefWidth="72.0" text="Oggetto" />
             <Label fx:id="oggettoLb" layoutX="112.0" layoutY="30.0" prefHeight="17.0" prefWidth="639.0" />
             <Label layoutX="18.0" layoutY="86.0" prefHeight="17.0" prefWidth="72.0" text="Destinatari" />
-            <Label fx:id="oggettoLb1" layoutX="108.0" layoutY="86.0" prefHeight="17.0" prefWidth="639.0" />
+            <Label fx:id="destinatariLb" layoutX="108.0" layoutY="86.0" prefHeight="17.0" prefWidth="639.0" />
             <Label layoutX="18.0" layoutY="140.0" prefHeight="17.0" prefWidth="72.0" text="Testo" />
-            <TextArea  disable="true" editable="false" focusTraversable="false" layoutX="67.0" layoutY="157.0"
+            <TextArea fx:id="bodyTA" disable="true" editable="false" focusTraversable="false" layoutX="67.0" layoutY="157.0"
                        prefHeight="200.0" prefWidth="602.0">
             </TextArea>
          </children></AnchorPane>

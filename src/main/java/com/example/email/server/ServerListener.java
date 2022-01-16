@@ -12,7 +12,6 @@ import java.util.List;
 
 public class ServerListener extends Thread {
     private int port;
-    private List<SocketActive> socketsActive;
     @FXML
     TextArea log;
 
@@ -20,7 +19,6 @@ public class ServerListener extends Thread {
         setDaemon(true);
         this.log = log;
         this.port=port;
-        socketsActive = new ArrayList<SocketActive>();
     }
 
     @Override
@@ -32,11 +30,6 @@ public class ServerListener extends Thread {
             log.appendText(String.valueOf(serverSocket.toString())+"\n");
             while(true){
                 Socket socket = serverSocket.accept();
-
-                SocketActive socketActive = new SocketActive();
-                this.socketsActive.add(socketActive);
-
-                log.appendText("-New client connected:  " );
                 /*questo dovrà essere implementato con thread pool*/
                 ServeClient client = new ServeClient(socket,log);
                 client.start();

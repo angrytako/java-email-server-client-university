@@ -6,24 +6,23 @@ import com.example.email.model.EmailComplete;
 import com.example.email.model.Utente;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class ClientController implements Initializable {
     private final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
@@ -33,9 +32,6 @@ public class ClientController implements Initializable {
     private SplitPane postaSp;
     private Email email;
     private Utente utente;
-    private Socket socket;
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
 
 
     @FXML
@@ -58,20 +54,54 @@ public class ClientController implements Initializable {
         nomeUtente.setText(utente.getEmailAddress());
         /*il controller crea la connessione con il Server, successivamente due thread di occupano di lettura e scrittura*/
 
-        socket = startServerConnession("localhost", 6868);
+        Socket socket = startServerConnection("localhost", 6868);
 
         try {
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
-            outputStream.flush();
-            inputStream = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException e) {
+            OutputStream outStream = socket.getOutputStream();
+            InputStream inStream = socket.getInputStream();
+            ObjectOutputStream objOutStream = new ObjectOutputStream(outStream);
+            ObjectInputStream objInStream = new ObjectInputStream(inStream);
+            objOutStream.writeObject(utente.getEmailAddress());
+            System.out.println("about to print");
+            objOutStream.writeObject("GET ALL");
+            System.out.println("sent");
+            System.out.println("waiting response");
+            String answer = (String) objInStream.readObject();
+            System.out.println(answer);
+            if(answer.equals("OK")){
+                try {
+
+                System.out.println("waiting the lists");
+                ArrayList<EmailComplete> inbox = (ArrayList<EmailComplete>) objInStream.readObject();
+                ArrayList<EmailComplete> sent = (ArrayList<EmailComplete>) objInStream.readObject();
+                    utente.sentEmails.addAll(sent);
+                    utente.inbox.addAll(inbox);
+
+                System.out.println(inbox.toString());
+                System.out.println(sent.toString());
+                }catch (Exception e){
+                    System.out.println("Error to handle");
+                    System.out.println(e);
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        InputServer inputServer = new InputServer(utente,socket,inputStream,outputStream);
-        inputServer.start();
 
         try {
             postaSp = postaRicevuta.load();
+            ListView lv =  ((ListView) postaSp.getItems().get(0));
+            AnchorPane inspectedEmail =  ((AnchorPane) postaSp.getItems().get(1));
+            lv.itemsProperty().bindBidirectional(utente.inbox);
+            lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                  EmailComplete selectedEmail = ((EmailComplete)lv.getSelectionModel().getSelectedItem());
+                    ((Label)inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
+                    ((Label)inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                    ((TextArea)inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                }
+            });
         }catch (IOException err){
             System.out.println(err.toString());
             System.exit(-1);
@@ -106,11 +136,10 @@ public class ClientController implements Initializable {
         }
 
 
-        EmailComplete emailToServer = new EmailComplete(email,null,utente.getEmailAddress(), LocalDateTime.now());
+        EmailComplete emailToServer = new EmailComplete(email,null, utente.getEmailAddress(), LocalDateTime.now());
         /*questo da thread può diventare collable così si possono gestire le eccezioni*/
-        OutToServer invio = new OutToServer(emailToServer,socket,outputStream);
+        OutToServer invio = new OutToServer(emailToServer, utente);
         invio.start();
-        utente.addEmail(emailToServer);
     }
 
 
@@ -175,7 +204,7 @@ public class ClientController implements Initializable {
     }
 
 
-    public Socket startServerConnession(String host ,int port ) {
+    public static Socket startServerConnection(String host , int port ) {
         Socket so;
         try {
             so = new Socket(host, port);
