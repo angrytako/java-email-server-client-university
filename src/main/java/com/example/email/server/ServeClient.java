@@ -4,11 +4,10 @@ import com.example.email.model.EmailComplete;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+
 public class ServeClient extends Thread{
     private Socket socket;
     private ObjectInputStream inStream;
@@ -79,11 +78,31 @@ public class ServeClient extends Thread{
             try {
                 EmailComplete email = (EmailComplete) inStream.readObject();
                 log.appendText(email.toString()+"\n");
-                FileOutputStream fileOutputStream = new FileOutputStream("src/main/resources/email/sent_"+utente+".txt", true);
-                ObjectOutputStream storico = new ObjectOutputStream(fileOutputStream);
-                storico.writeObject(email);
-                storico.close();
-                
+                String userFilePath = "src/main/resources/email/sent_"+utente+".txt";
+                File userFile = new File(userFilePath);
+                if(userFile.exists() && !userFile.isDirectory()){
+                    FileInputStream in = new FileInputStream(userFile);
+                    ObjectInputStream inObjs = new ObjectInputStream(in);
+                    ArrayList<EmailComplete> availableEmails = (ArrayList<EmailComplete>)inObjs.readObject();
+                    availableEmails.add(email);
+                    FileOutputStream fileOutputStream = new FileOutputStream(userFilePath);
+                    ObjectOutputStream storico = new ObjectOutputStream(fileOutputStream);
+                    storico.writeObject(availableEmails);
+                    storico.flush();
+                    storico.close();
+                    fileOutputStream.close();
+                }
+                else {
+                    FileOutputStream fileOutputStream = new FileOutputStream(userFilePath);
+                    ObjectOutputStream storico = new ObjectOutputStream(fileOutputStream);
+                    ArrayList<EmailComplete> arr = new ArrayList<EmailComplete>();
+                    arr.add(email);
+                    storico.writeObject(arr);
+                    storico.flush();
+                    storico.close();
+                    fileOutputStream.close();
+
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {

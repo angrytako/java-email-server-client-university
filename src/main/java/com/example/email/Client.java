@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
 public class Client extends Application {
 
@@ -33,14 +34,11 @@ public class Client extends Application {
         ObjectInputStream storico = null;
         try {
             storico = new ObjectInputStream(new FileInputStream("src/main/resources/email/sent_t@gmail.com.txt"));
-            EmailComplete email=null;
-            do {
-                email = (EmailComplete) storico.readObject();
-                if(email != null){
-                    System.out.println(email);
-                }
-            } while (email != null);
-
+            ArrayList<EmailComplete> emailList=null;
+            emailList = (ArrayList<EmailComplete>)storico.readObject();
+            for(EmailComplete email : emailList){
+                System.out.println(email);
+            }
             storico.close();
 
         } catch (Exception e) {
@@ -53,6 +51,6 @@ public class Client extends Application {
             }
         }
 
-      //  launch();
+       launch();
     }
 }

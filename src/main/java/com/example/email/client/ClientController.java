@@ -58,7 +58,7 @@ public class ClientController implements Initializable {
         nomeUtente.setText(utente.getEmailAddress());
         /*il controller crea la connessione con il Server, successivamente due thread di occupano di lettura e scrittura*/
 
-        socket = startServerConnession("172.28.230.162", 6868);
+        socket = startServerConnession("localhost", 6868);
 
         try {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
