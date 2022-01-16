@@ -1,6 +1,6 @@
-package com.example.email.server;
+package com.example.email;
 
-import com.example.email.client.Client;
+import com.example.email.Client;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

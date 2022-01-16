@@ -9,7 +9,7 @@ public class EmailComplete implements Serializable {
     private String destinatari;
     private String oggetto;
     private String testo;
-    private  LocalDateTime data;
+    private LocalDateTime data;
 
 
     public EmailComplete(Email emailSmall, Integer ID,
@@ -21,7 +21,9 @@ public class EmailComplete implements Serializable {
         this.mittente = mittente;
         this.data = data;
     }
-
+    public Integer getID() {
+        return ID;
+    }
     public String getMittente() {
         return mittente;
     }
