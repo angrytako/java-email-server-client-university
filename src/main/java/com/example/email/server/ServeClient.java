@@ -1,5 +1,6 @@
 package com.example.email.server;
 
+import com.example.email.model.DAO;
 import com.example.email.model.EmailComplete;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -20,6 +21,7 @@ public class ServeClient extends Thread{
     private InputStream inputStream;
     private ObjectOutputStream outObjStream;
     private String utente=null;
+    private DAO dao;
     @FXML
     TextArea log;
     public ServeClient(Socket socket,TextArea log) {
@@ -38,6 +40,8 @@ public class ServeClient extends Thread{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        this.dao=new DAO();
 
     }
 
@@ -210,40 +214,14 @@ public class ServeClient extends Thread{
         //putting email in receiver inbox
         for(String receiver : receivers){
             String receiverFilePath = "src/main/resources/email/inbox_" + receiver + ".txt";
-            writeEmailToFile(receiverFilePath, email);
+            dao.writeEmailToFile(receiverFilePath, email);
         }
         // putting email in sender send file
-        writeEmailToFile(senderFilePath, email);
+        dao.writeEmailToFile(senderFilePath, email);
     }
 
 
-    private void writeEmailToFile(String filePath, EmailComplete email) throws IOException, ClassNotFoundException {
-        File userFile = new File(filePath);
-        if(userFile.exists() && !userFile.isDirectory()){
-            FileInputStream in = new FileInputStream(userFile);
-            ObjectInputStream inObjs = new ObjectInputStream(in);
-            ArrayList<EmailComplete> availableEmails = (ArrayList<EmailComplete>)inObjs.readObject();
-            availableEmails.add(email);
-            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-            ObjectOutputStream storico = new ObjectOutputStream(fileOutputStream);
-            storico.writeObject(availableEmails);
-            storico.flush();
-            storico.close();
-            in.close();
-            fileOutputStream.close();
-        }
-        else {
-            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-            ObjectOutputStream storico = new ObjectOutputStream(fileOutputStream);
-            ArrayList<EmailComplete> arr = new ArrayList<EmailComplete>();
-            arr.add(email);
-            storico.writeObject(arr);
-            storico.flush();
-            storico.close();
-            fileOutputStream.close();
 
-        }
-    }
 
 
     private ArrayList<EmailComplete> getAllInboxEmails() throws IOException, ClassNotFoundException {

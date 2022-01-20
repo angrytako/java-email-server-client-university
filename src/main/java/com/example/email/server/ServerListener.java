@@ -30,7 +30,7 @@ public class ServerListener extends Thread {
             log.appendText(String.valueOf(serverSocket.toString())+"\n");
             while(true){
                 Socket socket = serverSocket.accept();
-                /*questo dovrà essere implementato con thread pool*/
+                /* TODO questo dovrà essere implementato con thread pool*/
                 ServeClient client = new ServeClient(socket,log);
                 client.start();
                 /*
