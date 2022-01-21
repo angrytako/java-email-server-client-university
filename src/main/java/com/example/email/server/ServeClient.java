@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.UUID;
 
-public class ServeClient extends Thread{
+public class ServeClient implements Runnable{
     private final static String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
     private enum RequestType {CHECK, ERROR, SEND_EMAIL, GET_ALL, GET_IN, GET_OUT, GET_ALL_IN, GET_ALL_OUT };
     private Socket socket;
@@ -20,12 +20,12 @@ public class ServeClient extends Thread{
     private OutputStream outputStream;
     private InputStream inputStream;
     private ObjectOutputStream outObjStream;
-    private String utente=null;
-    private DAO dao;
+    private String utente;
+
     @FXML
     TextArea log;
+
     public ServeClient(Socket socket,TextArea log) {
-        setDaemon(true);
         this.socket = socket;
         this.log=log;
 
@@ -41,13 +41,12 @@ public class ServeClient extends Thread{
             e.printStackTrace();
         }
 
-        this.dao=new DAO();
 
     }
 
 
 
-    @Override
+
     public void run() {
     //protocol:
     //send your email adress
@@ -91,33 +90,33 @@ public class ServeClient extends Thread{
                 log.appendText("\n"+utente+": Get all emails");
                 outObjStream.writeObject("OK");
                 outObjStream.flush();
-                ArrayList<EmailComplete> inboxEmails = getAllInboxEmails();
+                ArrayList<EmailComplete> inboxEmails = DAO.getAllEmails(utente,true);
                 outObjStream.writeObject(inboxEmails);
-                ArrayList<EmailComplete> sentEmails = getAllSentEmails();
+                ArrayList<EmailComplete> sentEmails = DAO.getAllEmails(utente,false);
                 outObjStream.writeObject(sentEmails);
                 break;
             }
             case GET_ALL_IN: {
                 log.appendText("\n"+utente+": Get all inbox emails");
-                ArrayList<EmailComplete> inboxEmails = getAllInboxEmails();
+                ArrayList<EmailComplete> inboxEmails = DAO.getAllEmails(utente,true);
                 outObjStream.writeObject(inboxEmails);
                 break;
             }
             case GET_ALL_OUT: {
                 log.appendText("\n"+utente+": Get all sent emails");
-                ArrayList<EmailComplete> sentEmails = getAllSentEmails();
+                ArrayList<EmailComplete> sentEmails = DAO.getAllEmails(utente,false);
                 outObjStream.writeObject(sentEmails);
                 break;
             }
             case GET_IN: {
-                ArrayList<EmailComplete> inboxEmails = getAllInboxEmails();
+                ArrayList<EmailComplete> inboxEmails = DAO.getAllEmails(utente,true);
                 String ID = getRequestEmailID(request);
                 log.appendText("\n"+utente+": Get all inbox emails after id " + ID);
                 outObjStream.writeObject(getEmailsAfterID(inboxEmails,ID));
                 break;
             }
             case GET_OUT: {
-                ArrayList<EmailComplete>  sentEmails = getAllSentEmails();
+                ArrayList<EmailComplete>  sentEmails = DAO.getAllEmails(utente,false);
                 String ID = getRequestEmailID(request);
                 log.appendText("\n"+utente+": Get all sent emails after id " + ID);
                 outObjStream.writeObject(getEmailsAfterID(sentEmails,ID));
@@ -208,7 +207,6 @@ public class ServeClient extends Thread{
 
 
     private void emailSending(EmailComplete email) throws IOException, ClassNotFoundException {
-        String senderFilePath = "src/main/resources/email/sent_" + utente + ".txt";
         if(!validateReceivers(email.getDestinatari()))
             return;
         String[] receivers = getReceivers(email.getDestinatari());
@@ -219,41 +217,17 @@ public class ServeClient extends Thread{
         email.setData(LocalDateTime.now());
         //putting email in receiver inbox
         for(String receiver : receivers){
-            String receiverFilePath = "src/main/resources/email/inbox_" + receiver + ".txt";
-            dao.writeEmailToFile(receiverFilePath, email);
+            DAO.writeEmailToFile(receiver, email,false);
         }
         // putting email in sender send file
-        dao.writeEmailToFile(senderFilePath, email);
+        DAO.writeEmailToFile(utente, email,true);
     }
 
 
 
 
 
-    private ArrayList<EmailComplete> getAllInboxEmails() throws IOException, ClassNotFoundException {
-        String userFilePath = "src/main/resources/email/inbox_" + utente + ".txt";
-        File userFile = new File(userFilePath);
-        if(userFile.exists() && !userFile.isDirectory()){
-            FileInputStream in = new FileInputStream(userFile);
-            ObjectInputStream inObjs = new ObjectInputStream(in);
-            ArrayList<EmailComplete> inboxEmails = (ArrayList<EmailComplete>)inObjs.readObject();
-            in.close();
-            return inboxEmails;
-        }
-        else return new ArrayList<>();
-    }
 
 
-    private ArrayList<EmailComplete> getAllSentEmails() throws IOException, ClassNotFoundException {
-        String userFilePath = "src/main/resources/email/sent_" + utente + ".txt";
-        File userFile = new File(userFilePath);
-        if(userFile.exists() && !userFile.isDirectory()){
-            FileInputStream in = new FileInputStream(userFile);
-            ObjectInputStream inObjs = new ObjectInputStream(in);
-            ArrayList<EmailComplete> sentEmails = (ArrayList<EmailComplete>)inObjs.readObject();
-            in.close();
-            return sentEmails;
-        }
-        else return new ArrayList<>();
-    }
+
 }

@@ -253,7 +253,7 @@ public class ClientController implements Initializable {
         Socket so;
         try {
             so = new Socket(host, port);
-            System.out.println(so);
+           // System.out.println(so);
             return so;
         } catch (IOException e) {
            // System.out.println(e+" Server non raggiungibile");

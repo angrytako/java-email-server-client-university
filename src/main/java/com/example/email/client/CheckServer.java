@@ -38,7 +38,7 @@ public class CheckServer extends Thread{
             Socket socket = ClientController.startServerConnection("localhost", 6868);
             if (socket == null) {
                 warning.set(true);
-
+                System.out.println("Not Conneccted with server");
             }else{
                 if (!emails_recived){
                     clientController.getEmail(socket);
@@ -46,9 +46,12 @@ public class CheckServer extends Thread{
                     warning.set(false);
                     warningInvio.set(false);
                 }else{
+                    warning.set(false);
+                    warningInvio.set(false);
                     try {
                         OutputStream outStream = socket.getOutputStream();
                         ObjectOutputStream objOutStream = new ObjectOutputStream(outStream);
+                        //TODO chiede se ci sono email nuove
                         objOutStream.writeObject("CHECK");
                         objOutStream.flush();
 
