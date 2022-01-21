@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class ServeClient extends Thread{
     private final static String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
-    private enum RequestType { ERROR, SEND_EMAIL, GET_ALL, GET_IN, GET_OUT, GET_ALL_IN, GET_ALL_OUT };
+    private enum RequestType {CHECK, ERROR, SEND_EMAIL, GET_ALL, GET_IN, GET_OUT, GET_ALL_IN, GET_ALL_OUT };
     private Socket socket;
     private ObjectInputStream inObjStream;
     private OutputStream outputStream;
@@ -123,6 +123,10 @@ public class ServeClient extends Thread{
                 outObjStream.writeObject(getEmailsAfterID(sentEmails,ID));
                 break;
             }
+            case CHECK:{
+
+                break;
+            }
             case ERROR: {
                 log.appendText("\n"+utente+": Bad request");
                 outObjStream.writeObject("ERROR BAD REQUEST");
@@ -154,6 +158,8 @@ public class ServeClient extends Thread{
             return RequestType.SEND_EMAIL;
         else if(request.equals("GET ALL"))
             return RequestType.GET_ALL;
+        else if(request.equals("CHECK"))
+            return RequestType.CHECK;
         else if(request.contains("GET IN FROM ")){
             if(request.split(" ").length == 3 || request.split(" ")[3].equals(""))
                 return RequestType.GET_ALL_IN;

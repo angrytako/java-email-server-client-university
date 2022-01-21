@@ -13,17 +13,16 @@ public class OutToServer extends Thread{
     private Socket socket;
     private EmailComplete email;
     private Utente user;
-    public OutToServer(EmailComplete email, Utente user) {
-        setDaemon(true);
+    public OutToServer(EmailComplete email, Utente user,Socket socket) {
         this.email = email;
         this.user = user;
+        this.socket=socket;
     }
 
 
     @Override
     public void run() {
         try {
-            Socket socket = ClientController.startServerConnection("localhost", 6868);
             OutputStream outStream = socket.getOutputStream();
             ObjectOutputStream objOutStream = new ObjectOutputStream(outStream);
             InputStream inStream = socket.getInputStream();

@@ -15,7 +15,7 @@ public class InputServer extends Thread{
     private ObjectOutputStream outputStream;
 
 
-
+//TODO cancellare questa classe èerchè non serve più
     public InputServer(Utente utente,Socket socket,ObjectInputStream inputStream, ObjectOutputStream outputStream) {
         setDaemon(true);
         this.utente = utente;

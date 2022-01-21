@@ -4,11 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="masterAp" prefHeight="582.0" prefWidth="948.0" xmlns="http://javafx.com/javafx/11.0.2"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.email.client.ClientController">
+<AnchorPane fx:id="masterAp" prefHeight="582.0" prefWidth="948.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.email.client.ClientController">
    <children>
-      <AnchorPane fx:id="invioAp" layoutY="106.0" prefHeight="484.0" prefWidth="948.0" AnchorPane.bottomAnchor="4.0"
-                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0">
+      <AnchorPane fx:id="invioAp" layoutY="106.0" prefHeight="484.0" prefWidth="948.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0">
           <children>
               <TextField fx:id="oggettoTF" layoutX="237.0" layoutY="82.0" />
               <Label layoutX="156.0" layoutY="86.0" text="Oggetto" />
@@ -17,16 +15,26 @@
               <Label layoutX="160.0" layoutY="183.0" text="Testo" />
               <TextArea fx:id="testoTA" layoutX="238.0" layoutY="188.0" prefHeight="200.0" prefWidth="475.0" />
               <Button layoutX="352.0" layoutY="405.0" mnemonicParsing="false" onAction="#invia" prefHeight="25.0" prefWidth="244.0" text="Invia" />
+            <Label fx:id="warningInvio" layoutX="242.0" layoutY="430.0" prefHeight="25.0" prefWidth="493.0" text="Non puoi inviare email fino a quando il server è disconnesso" textFill="#ff2121">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font>
+            </Label>
           </children>
       </AnchorPane>
-        <Label alignment="CENTER" fx:id="nomeUtente" contentDisplay="CENTER" layoutX="-11.0" prefHeight="39.0" prefWidth="938.0">
+        <Label fx:id="nomeUtente" alignment="CENTER" contentDisplay="CENTER" layoutX="-11.0" prefHeight="39.0" prefWidth="938.0">
             <font>
                 <Font size="36.0" />
             </font>
         </Label>
         <ButtonBar layoutX="5.0" layoutY="53.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="39.0" prefWidth="600.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
             <buttons>
-                <Button mnemonicParsing="false" text="Posta in Uscita" />
+            <Label fx:id="warning" alignment="TOP_CENTER" prefHeight="25.0" prefWidth="254.0" text="Server non attivo" textAlignment="CENTER" textFill="#f52424" textOverrun="WORD_ELLIPSIS" visible="false" wrapText="true">
+               <font>
+                  <Font name="Arial" size="24.0" />
+               </font>
+            </Label>
+                <Button mnemonicParsing="false" onAction="#postaInviataSwtich" text="Posta in Uscita" />
                 <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#postaRicevutaSwtich" text="Posta Ricevuta" />
                 <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#inviaSwitch" text="Spedizione" />
             </buttons>
