@@ -1,6 +1,7 @@
 package com.example.email.model;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
@@ -51,6 +52,8 @@ public class DAO {
             writeUnlock(filePath,readWriteLock);
         }
     }
+
+
     /*
     @param inbox If true email inbox else email sent
      */
@@ -78,6 +81,22 @@ public class DAO {
 
     }
 
+    public static ArrayList<EmailComplete> ceckNewEmail   (String utente,LocalDateTime lastEmailInbox) throws IOException, ClassNotFoundException {
+        ArrayList<EmailComplete> newMails=new ArrayList<EmailComplete>();;
+        ArrayList<EmailComplete> inbox = getAllEmails(utente,true);
+        if (inbox.size()==0) return null;
+        if(inbox.get(inbox.size()-1).getData().compareTo(lastEmailInbox)<=0) return null;
+        addNewMails(newMails,inbox,1,lastEmailInbox);
+        return newMails;
+    }
+
+    private static void addNewMails(ArrayList<EmailComplete> newMails, ArrayList<EmailComplete> inbox,int i,LocalDateTime lastEmailInbox){
+        if (inbox.size()-i<0) return;
+        if(inbox.get(inbox.size()-i).getData().compareTo(lastEmailInbox)>0){
+            addNewMails(newMails,inbox,i+1,lastEmailInbox);
+            newMails.add(inbox.get(inbox.size()-i));
+        }
+    }
 
 
 

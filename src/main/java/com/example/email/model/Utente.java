@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableArray;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,10 @@ public class Utente {
 
     public synchronized void addEmail(EmailComplete email){
         emails.add(email);
+    }
+
+    public synchronized LocalDateTime getLocalDateTimeLastEmailInbox(){
+        return inbox.get(inbox.size()-1).getData();
     }
 
 

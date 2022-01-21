@@ -74,7 +74,7 @@ public class ServeClient implements Runnable{
 
         String request = (String) inObjStream.readObject();
         RequestType actionRequested = parseRequest(request);
-        System.out.println(actionRequested);
+        System.out.println(actionRequested+" "+utente);
         switch (actionRequested){
             case SEND_EMAIL: {
                 log.appendText("\n"+utente+": SENDING EMAIL");
@@ -123,7 +123,12 @@ public class ServeClient implements Runnable{
                 break;
             }
             case CHECK:{
-
+                outObjStream.writeObject("OK");
+                outObjStream.flush();
+                LocalDateTime lastEmailInbox = (LocalDateTime) inObjStream.readObject();
+                ArrayList<EmailComplete> newMails = DAO.ceckNewEmail(utente,lastEmailInbox);
+                if (newMails!=null)  log.appendText("\n"+utente+": RECEIVING"+newMails.toString());
+                outObjStream.writeObject(newMails);
                 break;
             }
             case ERROR: {

@@ -1,12 +1,12 @@
 package com.example.email.client;
 
+import com.example.email.model.EmailComplete;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class CheckServer extends Thread{
     private BooleanProperty warning;
@@ -23,18 +23,19 @@ public class CheckServer extends Thread{
         this.clientController = clientController;
     }
 
-    public CheckServer(BooleanProperty warning,BooleanProperty warningInvio, Boolean emails_recived) {
-        setDaemon(true);
-        this.warning = warning;
-        this.warningInvio=warningInvio;
-        this.emails_recived=emails_recived;
-    }
+
 
 
 
     @Override
     public void run() {
         while(true) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             Socket socket = ClientController.startServerConnection("localhost", 6868);
             if (socket == null) {
                 warning.set(true);
@@ -50,23 +51,31 @@ public class CheckServer extends Thread{
                     warningInvio.set(false);
                     try {
                         OutputStream outStream = socket.getOutputStream();
+                        InputStream inStream = socket.getInputStream();
                         ObjectOutputStream objOutStream = new ObjectOutputStream(outStream);
-                        //TODO chiede se ci sono email nuove
+                        ObjectInputStream objInStream = new ObjectInputStream(inStream);
+
+                        objOutStream.writeObject(clientController.utente.getEmailAddress());
                         objOutStream.writeObject("CHECK");
                         objOutStream.flush();
-
-                    } catch (IOException e) {
+                        System.out.println("CHECK");
+                        String answer = (String) objInStream.readObject();
+                        if(answer.equals("OK")){
+                            objOutStream.writeObject(clientController.utente.getLocalDateTimeLastEmailInbox());
+                            ArrayList<EmailComplete> newMails = (ArrayList<EmailComplete>) objInStream.readObject();
+                            if (newMails==null) System.out.println("No new mails");
+                            else {
+                                clientController.utente.inbox.addAll(newMails);
+                            }
+                        }
+                    } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
 
 
             }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
         }
     }
 

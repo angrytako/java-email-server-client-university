@@ -35,7 +35,7 @@ public class ClientController implements Initializable {
     private SplitPane postaSp;
     private SplitPane postaInv;
     private Email email;
-    private Utente utente;
+    protected Utente utente;
 
 
     @FXML
@@ -56,7 +56,7 @@ public class ClientController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        utente = new Utente("t@gmail.com");  //questa può essere cambiata, quando l'ho messo non mi era chiaro come lanciare i client
+        utente = new Utente(loginUtente());  //questa può essere cambiata, quando l'ho messo non mi era chiaro come lanciare i client
         nomeUtente.setText(utente.getEmailAddress());
         /*il controller crea la connessione con il Server, successivamente due thread di occupano di lettura e scrittura*/
 
@@ -67,10 +67,9 @@ public class ClientController implements Initializable {
             checkServer.start();
         }else{
             getEmail(socket);
-            CheckServer checkServer = new CheckServer(warning.visibleProperty(),warningInvio.visibleProperty(),true);
+            CheckServer checkServer = new CheckServer(warning.visibleProperty(),warningInvio.visibleProperty(),true,this);
             checkServer.start();
         }
-
 
 
         try {
@@ -294,6 +293,43 @@ public class ClientController implements Initializable {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private String loginUtente(){
+        //login leggo l'utente da file
+        int u=0;
+        try {
+            FileReader fileIn = new FileReader("src/main/resources/utente.txt");
+            u=fileIn.read();
+            if (u==-1) System.out.println("errore lettura file utente");
+            else System.out.println(u-48);
+            fileIn.close();
+            FileWriter fileOut = new FileWriter("src/main/resources/utente.txt");
+            u=(((u-48)+1)%3)+48;
+            fileOut.write(u);
+            fileOut.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String emailUtente="t@gmail.com";
+        switch (u-48){
+            case 0:{
+                emailUtente = "enrico@gmail.com";
+                break;
+            }
+            case 1:{
+                emailUtente = "lorenzo@gmail.com";
+                break;
+            }
+            case 2:{
+                emailUtente = "anna@libero.it";
+                break;
+            }
+        }
+        return emailUtente;
     }
 
 }
