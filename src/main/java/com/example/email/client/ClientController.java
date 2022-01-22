@@ -85,16 +85,60 @@ public class ClientController implements Initializable {
                     System.out.println("ciao");
                 }
             });
+
+            //answer, answerAll, forward btns
+            ((Button)inspectedEmail.lookup("#answBtn")).setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                    if(selectedEmail != null){
+                        String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
+                        String sender = ((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString();
+                        String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
+                        setEmailToSend(subject,sender,body);
+                        inviaSwitch(new ActionEvent());
+                    }
+                }
+            });
+            ((Button)inspectedEmail.lookup("#answAllBtn")).setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                    if(selectedEmail != null){
+                        String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
+                        String sender = ((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString();
+                        String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
+                        String receivers =  ((Label)inspectedEmail.lookup("#destinatariLb")).getText().toString();
+                        String destination = removeSelfAndConcat(sender,receivers);
+                        setEmailToSend(subject,destination,body);
+                        inviaSwitch(new ActionEvent());
+                    }
+                }
+            });
+            ((Button)inspectedEmail.lookup("#forwardInBtn")).setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                    if(selectedEmail != null){
+                        String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
+                        String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
+                        setEmailToSend(subject,"",body);
+                        inviaSwitch(new ActionEvent());
+                    }
+                }
+            });
             lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
-                    ((Label)inspectedEmail.lookup("#mittenteLb")).setText(selectedEmail.getMittente());
-                    ((Label)inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
-                    ((Label)inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
-                    ((Label)inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
-                    ((TextArea)inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
-                    ((Label)inspectedEmail.lookup("#idLb")).setText("ID: "+selectedEmail.getID());
+                    if(selectedEmail != null) {
+                        ((Label) inspectedEmail.lookup("#mittenteLb")).setText(selectedEmail.getMittente());
+                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
+                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                        ((Label) inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
+                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
+                    }
 
 
                 }
@@ -115,11 +159,28 @@ public class ClientController implements Initializable {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
-                    ((Label)inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
-                    ((Label)inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
-                    ((Label)inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
-                    ((TextArea)inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
-                    ((Label)inspectedEmail.lookup("#idLb")).setText("ID: "+selectedEmail.getID());
+                    if(selectedEmail != null) {
+                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
+                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                        ((Label) inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
+                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
+                    }
+                }
+            });
+
+            //forward btn
+            ((Button)inspectedEmail.lookup("#forwardOutBtn")).setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                    if(selectedEmail != null){
+                        String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
+                        String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
+                        setEmailToSend(subject,"",body);
+                        inviaSwitch(new ActionEvent());
+
+                    }
                 }
             });
         }catch (IOException err){
@@ -179,7 +240,7 @@ public class ClientController implements Initializable {
     }
 
 
-    public void postaInviataSwtich(ActionEvent e){
+    public void postaInviataSwitch(ActionEvent e){
         switch (state){
             case INVIO:
             {
@@ -202,7 +263,7 @@ public class ClientController implements Initializable {
 
     }
 
-    public void postaRicevutaSwtich(ActionEvent e){
+    public void postaRicevutaSwitch(ActionEvent e){
         switch (state){
             case INVIO:
                 {
@@ -347,6 +408,17 @@ public class ClientController implements Initializable {
             }
         }
         return emailUtente;
+    }
+    private String removeSelfAndConcat(String sender, String receivers){
+        String[] receiversArr = receivers.split(",");
+        StringBuffer result = new StringBuffer();
+        result.append(sender);
+        for (String receiver : receiversArr){
+            if(!receiver.trim().equals(utente.getEmailAddress())){
+                result.append(", " + receiver);
+            }
+        }
+        return result.toString();
     }
 
 }
