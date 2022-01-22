@@ -58,14 +58,14 @@ public class CheckServer extends Thread{
                         objOutStream.writeObject(clientController.utente.getEmailAddress());
                         objOutStream.writeObject("CHECK");
                         objOutStream.flush();
-                        System.out.println("CHECK");
+                      //  System.out.println("CHECK");
                         String answer = (String) objInStream.readObject();
                         if(answer.equals("OK")){
                             objOutStream.writeObject(clientController.utente.getLocalDateTimeLastEmailInbox());
                             ArrayList<EmailComplete> newMails = (ArrayList<EmailComplete>) objInStream.readObject();
-                            if (newMails==null) System.out.println("No new mails");
+                            if (newMails==null) ;//System.out.println("No new mails");
                             else {
-                                clientController.utente.inbox.addAll(newMails);
+                                clientController.utente.addEmailInbox(newMails);
                             }
                         }
                     } catch (IOException | ClassNotFoundException e) {

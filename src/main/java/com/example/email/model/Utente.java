@@ -11,7 +11,6 @@ import java.util.List;
 
 public class Utente {
     private String emailAddress;  //es@gmail.com
-    private List<EmailComplete> emails;
     public SimpleListProperty<EmailComplete> inbox;
     public SimpleListProperty<EmailComplete> sentEmails;
 
@@ -25,40 +24,56 @@ public class Utente {
         return emailAddress;
     }
 
-    public synchronized void addEmail(EmailComplete email){
-        emails.add(email);
-    }
 
     public synchronized LocalDateTime getLocalDateTimeLastEmailInbox(){
         if (inbox.size()==0) return null;
         return inbox.get(inbox.size()-1).getData();
     }
 
-    public synchronized void deleteEmail(EmailComplete emailToDelete){
+    public synchronized void addEmailInbox(ArrayList<EmailComplete> inbox){
+        this.inbox.addAll(inbox);
+    }
+    public synchronized void addEmailSent(ArrayList<EmailComplete> sent){
+        this.sentEmails.addAll(sent);
+    }
 
+    public synchronized void deleteEmail(EmailComplete emailToDelete){
+        EmailComplete toDelete=null;
         if(emailToDelete.getMittente().equals(emailAddress)){
+            System.out.println(sentEmails);
+
             for (EmailComplete email:sentEmails) {
                 if (email.getID().equals(emailToDelete.getID())) {
-                    sentEmails.remove(email);
+                    toDelete=email;
                 }
             }
+            if(toDelete!=null)sentEmails.remove(toDelete);
+            System.out.println(sentEmails);
+
             String[] receivers = emailToDelete.getDestinatari().split(",");
             for(String receiver : receivers){
                 if(receiver.equals(emailAddress)) {
+                    System.out.println(inbox);
+                    toDelete=null;
                     for (EmailComplete email:inbox) {
                         if (email.getID().equals(emailToDelete.getID())) {
-                            inbox.remove(email);
+                            toDelete=email;
                         }
                     }
+                    inbox.remove(toDelete);
+                    System.out.println(inbox);
                 }
             }
         }
         else{
+            System.out.println(inbox);
             for (EmailComplete email:inbox) {
                 if (email.getID().equals(emailToDelete.getID())) {
-                    inbox.remove(email);
+                    toDelete=email;
                 }
             }
+            inbox.remove(toDelete);
+            System.out.println(inbox);
         }
 
 

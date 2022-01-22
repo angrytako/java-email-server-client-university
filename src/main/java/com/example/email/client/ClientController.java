@@ -356,12 +356,12 @@ public class ClientController implements Initializable {
             System.out.println(answer);
             if(answer.equals("OK")){
                 try {
-
                     System.out.println("waiting the lists");
                     ArrayList<EmailComplete> inbox = (ArrayList<EmailComplete>) objInStream.readObject();
                     ArrayList<EmailComplete> sent = (ArrayList<EmailComplete>) objInStream.readObject();
-                    utente.sentEmails.addAll(sent);
-                    utente.inbox.addAll(inbox);
+                    utente.addEmailSent(sent);
+                    utente.addEmailInbox(inbox);
+
 
                     System.out.println(inbox.toString());
                     System.out.println(sent.toString());

@@ -104,14 +104,15 @@ public class DAO {
                 in = new FileInputStream(userFile);
                 inObjs = new ObjectInputStream(in);
                 ArrayList<EmailComplete> availableEmails = (ArrayList<EmailComplete>)inObjs.readObject();
-                for (EmailComplete email:availableEmails) {
-                    System.out.println(email.getID()+"---"+id);
+                System.out.println(availableEmails);
+                EmailComplete toDelete=null;
+                for (EmailComplete email: availableEmails) {
                     if (email.getID().equals(id)) {
-                        availableEmails.remove(email);
-                        System.out.println("email rimossa");
-
+                        toDelete=email;
                     }
                 }
+                if (toDelete!=null)availableEmails.remove(toDelete);
+                System.out.println(availableEmails);
 
                 FileOutputStream fileOutputStream = new FileOutputStream(filePath);
                 ObjectOutputStream storico = new ObjectOutputStream(fileOutputStream);
@@ -139,7 +140,6 @@ public class DAO {
             writeLock.unlock();
             return false;
         }
-
         return true;
     }
 

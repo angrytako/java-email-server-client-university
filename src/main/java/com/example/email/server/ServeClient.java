@@ -137,20 +137,20 @@ public class ServeClient implements Runnable{
                 //ricevo id mail da cancellare
                 String id = (String) inObjStream.readObject();
                 //se la cancello invio cancellated
+                String message="CANCELLATED";
                 if(DAO.deleteEmail(utente,id,false)){
-                    outObjStream.writeObject("CANCELLATED");
                     log.appendText("\n"+utente+": CANCELLATED SENT email");
                 }else{
-                    outObjStream.writeObject("ABORT");
+                    message="ABORT";
                     log.appendText("\n"+utente+": CANCELLATED SENT error");
                 }
                 if(DAO.deleteEmail(utente,id,true)){
-                    outObjStream.writeObject("CANCELLATED");
                     log.appendText("\n"+utente+": CANCELLATED INBOX");
                 }else{
-                    outObjStream.writeObject("ABORT");
+                    message="ABORT";
                     log.appendText("\n"+utente+": CANCELLATED INBOX error");
                 }
+                outObjStream.writeObject(message);
 
                 break;
             }
