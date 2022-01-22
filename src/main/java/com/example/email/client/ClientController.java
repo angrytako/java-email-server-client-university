@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
@@ -72,11 +73,18 @@ public class ClientController implements Initializable {
         }
 
 
+
         try {
             postaSp = postaRicevuta.load();
             ListView lv =  ((ListView) postaSp.getItems().get(0));
             AnchorPane inspectedEmail =  ((AnchorPane) postaSp.getItems().get(1));
             lv.itemsProperty().bindBidirectional(utente.inbox);
+            ((Button)inspectedEmail.lookup("#delete")).setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    System.out.println("ciao");
+                }
+            });
             lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -88,12 +96,15 @@ public class ClientController implements Initializable {
                     ((TextArea)inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
                     ((Label)inspectedEmail.lookup("#idLb")).setText("ID: "+selectedEmail.getID());
 
+
                 }
             });
         }catch (IOException err){
             System.out.println(err.toString());
             System.exit(-1);
         }
+
+
 
         try {
             postaInv = postaInviata.load();

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
@@ -27,6 +28,14 @@
                   <Font name="Century Gothic" size="10.0" />
                </font>
             </Label>
+            <Button fx:id="delete" layoutX="651.0" layoutY="41.0" mnemonicParsing="false">
+               <graphic>
+                  <ImageView fitHeight="54.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../img/delate.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
          </children></AnchorPane>
    </items>
 </SplitPane>
