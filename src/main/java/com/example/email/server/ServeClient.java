@@ -38,6 +38,116 @@ public class ServeClient extends Thread{
 
     @Override
     public void run() {
+<<<<<<< Updated upstream
+=======
+    //protocol:
+    //send your email adress
+    //continue with text request and await text acknowledgement:
+        // SEND -> [OK,ERROR ...]
+        // GET ALL -> [OK, ERROR ...]
+        // GET IN FROM <EMAIL_ID> -> [OK, ERROR ...]
+        // GET OUT FROM <EMAIL_ID> -> [OK, ERROR ...]
+        //if error is sent, socket gets terminated, else:
+        //case SEND -> OK
+            //client sends an EmailComplete
+            //server writes in the appropriate files and sends back OK and then the sentEmail or ERROR at the end
+        //case GET ALL -> OK
+            //server first sends an ArrayList<EmailComplete> of all inbox emails,
+            // then an ArrayList<EmailComplete> of all sent emails;
+            // in case of error sends null and closes connection
+        //case GET IN FROM <EMAIL_ID> -> OK
+            //server searches for <EMAIL_ID> in inbox file and sends an ArrayList<EmailComplete>; in case of error sends null and closes connection
+            //no <EMAIL_ID> is interpreted as "give all inbox emails"
+        //case GET OUT FROM <EMAIL_ID> -> OK
+            //server searches for <EMAIL_ID> in sent file and sends an ArrayList<EmailComplete>; in case of error sends null and closes connection
+            //no <EMAIL_ID> is interpreted as "give all sent emails"
+
+    try{
+
+        String request = (String) inObjStream.readObject();
+        RequestType actionRequested = parseRequest(request);
+        System.out.println(actionRequested+" "+utente);
+        switch (actionRequested){
+            case SEND_EMAIL: {
+                log.appendText("\n"+utente+": SENDING EMAIL");
+                outObjStream.writeObject("OK");
+                EmailComplete email = (EmailComplete) inObjStream.readObject();
+                //this operation also sets the email's ID
+                emailSending(email);
+                outObjStream.writeObject("OK");
+                outObjStream.writeObject(email);
+                break;
+            }
+            case GET_ALL: {
+                log.appendText("\n"+utente+": Get all emails");
+                outObjStream.writeObject("OK");
+                outObjStream.flush();
+                ArrayList<EmailComplete> inboxEmails = DAO.getAllEmails(utente,true);
+                outObjStream.writeObject(inboxEmails);
+                ArrayList<EmailComplete> sentEmails = DAO.getAllEmails(utente,false);
+                outObjStream.writeObject(sentEmails);
+                break;
+            }
+            case GET_ALL_IN: {
+                log.appendText("\n"+utente+": Get all inbox emails");
+                ArrayList<EmailComplete> inboxEmails = DAO.getAllEmails(utente,true);
+                outObjStream.writeObject(inboxEmails);
+                break;
+            }
+            case GET_ALL_OUT: {
+                log.appendText("\n"+utente+": Get all sent emails");
+                ArrayList<EmailComplete> sentEmails = DAO.getAllEmails(utente,false);
+                outObjStream.writeObject(sentEmails);
+                break;
+            }
+            case GET_IN: {
+                ArrayList<EmailComplete> inboxEmails = DAO.getAllEmails(utente,true);
+                String ID = getRequestEmailID(request);
+                log.appendText("\n"+utente+": Get all inbox emails after id " + ID);
+                outObjStream.writeObject(getEmailsAfterID(inboxEmails,ID));
+                break;
+            }
+            case GET_OUT: {
+                ArrayList<EmailComplete>  sentEmails = DAO.getAllEmails(utente,false);
+                String ID = getRequestEmailID(request);
+                log.appendText("\n"+utente+": Get all sent emails after id " + ID);
+                outObjStream.writeObject(getEmailsAfterID(sentEmails,ID));
+                break;
+            }
+            case CHECK:{
+                outObjStream.writeObject("OK");
+                outObjStream.flush();
+                LocalDateTime lastEmailInbox = (LocalDateTime) inObjStream.readObject();
+                ArrayList<EmailComplete> newMails = DAO.ceckNewEmail(utente,lastEmailInbox);
+                if (newMails!=null)  log.appendText("\n"+utente+": RECEIVING"+newMails.toString());
+                else log.appendText("\n"+utente+": CHECK");
+                outObjStream.writeObject(newMails);
+                break;
+            }
+            case ERROR: {
+                log.appendText("\n"+utente+": Bad request");
+                outObjStream.writeObject("ERROR BAD REQUEST");
+                break;
+            }
+        }
+    }
+    catch (Exception e){
+        try {
+            System.out.println(e);
+            log.appendText("\n"+utente+": Unexpected error");
+            outObjStream.writeObject("ERROR UNKNOWN");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    finally {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+>>>>>>> Stashed changes
 
 
 

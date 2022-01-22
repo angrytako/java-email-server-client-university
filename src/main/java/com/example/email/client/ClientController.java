@@ -10,10 +10,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+<<<<<<< Updated upstream
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+=======
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+>>>>>>> Stashed changes
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
@@ -29,6 +36,8 @@ public class ClientController implements Initializable {
     private final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
     private final FXMLLoader postaRicevuta = new FXMLLoader(Client.class.getResource("posta-view.fxml"));
     private enum statesEnum { INVIO, POSTA_RICEVUTA, POSTA_IN_USCITA };
+    private File file = new File("src/main/resources/img/delate.png");
+    private Image image = new Image(file.toURI().toString());
     private statesEnum state;
     private SplitPane postaSp;
     private Email email;
@@ -51,6 +60,8 @@ public class ClientController implements Initializable {
 
 
 
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -60,18 +71,62 @@ public class ClientController implements Initializable {
 
         socket = startServerConnession("localhost", 6868);
 
+
+
         try {
+<<<<<<< Updated upstream
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             outputStream.flush();
             inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
+=======
+            postaSp = postaRicevuta.load();
+            ListView lv =  ((ListView) postaSp.getItems().get(0));
+            AnchorPane inspectedEmail =  ((AnchorPane) postaSp.getItems().get(1));
+            lv.itemsProperty().bindBidirectional(utente.inbox);
+            lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                    ((Label)inspectedEmail.lookup("#mittenteLb")).setText(selectedEmail.getMittente());
+                    ((Label)inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
+                    ((Label)inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                    ((Label)inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
+                    ((TextArea)inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                    ((Label)inspectedEmail.lookup("#idLb")).setText("ID: "+selectedEmail.getID());
+                    ((ImageView)inspectedEmail.lookup("#delate")).setImage(image);
+                }
+            });
+        }catch (IOException err){
+            System.out.println(err.toString());
+            System.exit(-1);
+>>>>>>> Stashed changes
         }
         InputServer inputServer = new InputServer(utente,socket,inputStream,outputStream);
         inputServer.start();
 
         try {
+<<<<<<< Updated upstream
             postaSp = postaRicevuta.load();
+=======
+            postaInv = postaInviata.load();
+            ListView lv =  ((ListView) postaInv.getItems().get(0));
+            AnchorPane inspectedEmail =  ((AnchorPane) postaInv.getItems().get(1));
+            lv.itemsProperty().bindBidirectional(utente.sentEmails);
+            lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                    ((Label)inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
+                    ((Label)inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                    ((Label)inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
+                    ((TextArea)inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                    ((Label)inspectedEmail.lookup("#idLb")).setText("ID: "+selectedEmail.getID());
+                    ((ImageView)inspectedEmail.lookup("#delate")).setImage(image);
+                }
+            });
+>>>>>>> Stashed changes
         }catch (IOException err){
             System.out.println(err.toString());
             System.exit(-1);
@@ -79,13 +134,27 @@ public class ClientController implements Initializable {
         state = statesEnum.INVIO;
         this.email = new Email( oggettoTF.textProperty(), destinatariTF.textProperty(), testoTA.textProperty());
         setEmailToSend("Università", "enrico@gmail.com","Enrico è il più figo");
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
     }
+
+
+
+
+
 
 
     private void setEmailToSend(String oggetto, String destinatari, String testo){
         this.oggettoTF.setText(oggetto);
         this.destinatariTF.setText(destinatari);
         this.testoTA.setText(testo);
+    }
+
+    public void elimina(){
+        System.out.println("uffa");
     }
 
     public void invia(ActionEvent e){

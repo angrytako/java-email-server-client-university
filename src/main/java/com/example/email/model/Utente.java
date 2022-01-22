@@ -22,5 +22,13 @@ public class Utente {
         emails.add(email);
     }
 
+<<<<<<< Updated upstream
+=======
+    public synchronized LocalDateTime getLocalDateTimeLastEmailInbox(){
+        if (inbox.size()>0) return null;
+        return inbox.get(inbox.size()-1).getData();
+    }
+
+>>>>>>> Stashed changes
 
 }

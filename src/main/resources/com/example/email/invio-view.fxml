@@ -4,12 +4,18 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<<<<<<< Updated upstream
 <AnchorPane fx:id="masterAp" prefHeight="582.0" prefWidth="948.0" xmlns="http://javafx.com/javafx/11.0.2"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.email.client.ClientController">
+=======
+<AnchorPane fx:id="masterAp" prefHeight="582.0" prefWidth="948.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.email.client.ClientController">
+>>>>>>> Stashed changes
    <children>
       <AnchorPane fx:id="invioAp" layoutY="106.0" prefHeight="484.0" prefWidth="948.0" AnchorPane.bottomAnchor="4.0"
                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0">
           <children>
+
               <TextField fx:id="oggettoTF" layoutX="237.0" layoutY="82.0" />
               <Label layoutX="156.0" layoutY="86.0" text="Oggetto" />
               <Label layoutX="156.0" layoutY="139.0" text="Destinatari" />
@@ -19,7 +25,12 @@
               <Button layoutX="352.0" layoutY="405.0" mnemonicParsing="false" onAction="#invia" prefHeight="25.0" prefWidth="244.0" text="Invia" />
           </children>
       </AnchorPane>
+<<<<<<< Updated upstream
         <Label alignment="CENTER" fx:id="nomeUtente" contentDisplay="CENTER" layoutX="-11.0" prefHeight="39.0" prefWidth="938.0">
+=======
+
+        <Label fx:id="nomeUtente" alignment="CENTER" contentDisplay="CENTER" layoutX="-11.0" prefHeight="39.0" prefWidth="938.0">
+>>>>>>> Stashed changes
             <font>
                 <Font size="36.0" />
             </font>
@@ -33,4 +44,6 @@
         </ButtonBar>
         <Separator layoutX="14.0" layoutY="106.0" prefHeight="1.0" prefWidth="932.0" />
    </children>
+
+
 </AnchorPane>
