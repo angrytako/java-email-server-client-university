@@ -62,13 +62,6 @@ public class EmailComplete implements Serializable {
 
     @Override
     public String toString() {
-        return "EmailComplete{" +
-                "ID='" + ID + '\'' +
-                ", mittente='" + mittente + '\'' +
-                ", destinatari='" + destinatari + '\'' +
-                ", oggetto='" + oggetto + '\'' +
-                ", testo='" + testo + '\'' +
-                ", data=" + data +
-                '}';
+        return oggetto;
     }
 }
