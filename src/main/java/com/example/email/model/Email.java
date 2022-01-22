@@ -40,4 +40,13 @@ public class Email implements Serializable {
     public String getTesto() {
         return testo.get();
     }
+
+
+    public void reset() {
+        this.destinatari.set("");
+        this.oggetto.set("");
+        this.testo.set("");
+    }
+
+
 }

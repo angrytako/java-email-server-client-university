@@ -9,18 +9,28 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 public class ServerListener extends Thread {
+    private ExecutorService executor;
     private int port;
-    private List<SocketActive> socketsActive;
     @FXML
     TextArea log;
 
     public ServerListener(TextArea log, int port) {
-        setDaemon(true);
+        this.setDaemon(true);
         this.log = log;
         this.port=port;
-        socketsActive = new ArrayList<SocketActive>();
+        this.executor = Executors.newFixedThreadPool(10, new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread t = Executors.defaultThreadFactory().newThread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        } );
+
     }
 
     @Override
@@ -30,32 +40,34 @@ public class ServerListener extends Thread {
              serverSocket = new ServerSocket(port);
             log.appendText("-Server ON  -->   ");
             log.appendText(String.valueOf(serverSocket.toString())+"\n");
+
             while(true){
                 Socket socket = serverSocket.accept();
 
-                SocketActive socketActive = new SocketActive();
-                this.socketsActive.add(socketActive);
-
-                log.appendText("-New client connected:  " );
-                /*questo dovrà essere implementato con thread pool*/
                 ServeClient client = new ServeClient(socket,log);
-                client.start();
-                /*
-                ServeClient client = new ServeClient(socket,log,socketsActive,socketActive);
-                client.start();
-                */
 
+                executor.execute(client);
+
+//                Thread thread = new Thread(client);
+//                thread.start();
 
             }
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
+            System.out.println("ciao");
+            executor.shutdown();
             if (serverSocket!=null)
                 try {
                     serverSocket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+            while (!executor.isTerminated()) {
+                System.out.println("aaaaaaa");
+            }
+            System.out.println("Finished all thread");
         }
     }
 

@@ -29,28 +29,6 @@ public class Client extends Application {
         String uuidAsString = uuid. toString();
         System. out. println("Your UUID is: " + uuidAsString);
         */
-
-
-        ObjectInputStream storico = null;
-        try {
-            storico = new ObjectInputStream(new FileInputStream("src/main/resources/email/sent_t@gmail.com.txt"));
-            ArrayList<EmailComplete> emailList=null;
-            emailList = (ArrayList<EmailComplete>)storico.readObject();
-            for(EmailComplete email : emailList){
-                System.out.println(email);
-            }
-            storico.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                storico.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
        launch();
     }
 }

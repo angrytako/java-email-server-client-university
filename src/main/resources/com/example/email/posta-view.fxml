@@ -1,43 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<<<<<<< Updated upstream
-<?import javafx.scene.effect.*?>
-=======
 <?import javafx.scene.image.*?>
->>>>>>> Stashed changes
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<SplitPane fx:id="postaSp" dividerPositions="0.33403805496828753" layoutY="106.0" prefHeight="484.0" prefWidth="948.0"
-           AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0"
-<<<<<<< Updated upstream
-           xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane fx:id="postaSp" dividerPositions="0.33403805496828753" layoutY="106.0" prefHeight="484.0" prefWidth="948.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <items>
       <ListView prefHeight="432.0" prefWidth="534.0" />
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <Label layoutX="18.0" layoutY="30.0" prefHeight="17.0" prefWidth="72.0" text="Oggetto" />
-            <Label fx:id="oggettoLb" layoutX="112.0" layoutY="30.0" prefHeight="17.0" prefWidth="639.0" />
-            <Label layoutX="18.0" layoutY="86.0" prefHeight="17.0" prefWidth="72.0" text="Destinatari" />
-            <Label fx:id="oggettoLb1" layoutX="108.0" layoutY="86.0" prefHeight="17.0" prefWidth="639.0" />
-            <Label layoutX="18.0" layoutY="140.0" prefHeight="17.0" prefWidth="72.0" text="Testo" />
-            <TextArea  disable="true" editable="false" focusTraversable="false" layoutX="67.0" layoutY="157.0"
-                       prefHeight="200.0" prefWidth="602.0">
-            </TextArea>
-=======
-           xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.email.client.EmailController">
-
-<items>
-      <ListView prefHeight="432.0" prefWidth="534.0" />
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
-         <children>
-            <ImageView fx:id="delate" fitHeight="54.0" fitWidth="47.0" layoutX="661.0" layoutY="30.0" onMouseClicked="#delate" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../img/delate.png" />
-               </image>
-            </ImageView>
             <Label layoutX="18.0" layoutY="30.0" prefHeight="17.0" prefWidth="72.0" text="Mittente" />
             <Label fx:id="mittenteLb" layoutX="112.0" layoutY="30.0" prefHeight="17.0" prefWidth="639.0" />
             <Label layoutX="18.0" layoutY="60.0" prefHeight="17.0" prefWidth="72.0" text="Oggetto" />
@@ -56,7 +28,14 @@
                   <Font name="Century Gothic" size="10.0" />
                </font>
             </Label>
->>>>>>> Stashed changes
+            <Button fx:id="delete" layoutX="651.0" layoutY="41.0" mnemonicParsing="false">
+               <graphic>
+                  <ImageView fitHeight="54.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../img/delate.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
          </children></AnchorPane>
    </items>
 </SplitPane>

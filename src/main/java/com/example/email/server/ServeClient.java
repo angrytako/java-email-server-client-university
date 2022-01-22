@@ -1,45 +1,53 @@
 package com.example.email.server;
 
+import com.example.email.model.DAO;
 import com.example.email.model.EmailComplete;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.UUID;
 
-public class ServeClient extends Thread{
+public class ServeClient implements Runnable{
+    private final static String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+    private enum RequestType {CHECK, ERROR, SEND_EMAIL, GET_ALL, GET_IN, GET_OUT, GET_ALL_IN, GET_ALL_OUT };
     private Socket socket;
-    private ObjectInputStream inStream;
-    private ObjectOutputStream outStream;
-    private String utente=null;
+    private ObjectInputStream inObjStream;
+    private OutputStream outputStream;
+    private InputStream inputStream;
+    private ObjectOutputStream outObjStream;
+    private String utente;
+
     @FXML
     TextArea log;
+
     public ServeClient(Socket socket,TextArea log) {
-        setDaemon(true);
         this.socket = socket;
         this.log=log;
 
         try {
-            outStream = new ObjectOutputStream(socket.getOutputStream());
-            outStream.flush();
-            inStream = new ObjectInputStream(socket.getInputStream());
-            utente = (String) inStream.readObject();
-            log.appendText(utente+"\n");
+            outputStream = socket.getOutputStream();
+            outObjStream = new ObjectOutputStream(outputStream);
+            inputStream = socket.getInputStream();
+            inObjStream = new ObjectInputStream(inputStream);
+            utente = (String) inObjStream.readObject();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
+
     }
 
 
 
-    @Override
+
     public void run() {
-<<<<<<< Updated upstream
-=======
     //protocol:
     //send your email adress
     //continue with text request and await text acknowledgement:
@@ -120,7 +128,6 @@ public class ServeClient extends Thread{
                 LocalDateTime lastEmailInbox = (LocalDateTime) inObjStream.readObject();
                 ArrayList<EmailComplete> newMails = DAO.ceckNewEmail(utente,lastEmailInbox);
                 if (newMails!=null)  log.appendText("\n"+utente+": RECEIVING"+newMails.toString());
-                else log.appendText("\n"+utente+": CHECK");
                 outObjStream.writeObject(newMails);
                 break;
             }
@@ -147,85 +154,85 @@ public class ServeClient extends Thread{
             e.printStackTrace();
         }
     }
->>>>>>> Stashed changes
 
-
-
-
-        /*invio al client le sue mail
-        try {
-            ObjectInputStream storico = new ObjectInputStream(new FileInputStream("src/main/resources/email/sent_"+utente+".txt"));
-            EmailComplete email;
-            do {
-                email = (EmailComplete) storico.readObject();
-                if(email != null){
-                    System.out.println(email);
-                  //invio mail
-                }
-            } while (email != null);
-
-            storico.close();
-
-        } catch (Exception e) {
-            // e.printStackTrace();
-            System.out.println("error");
-        }
-
-
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-*/
-
-
-
-
-
-        //ricezione delle mail
-        while (inStream!=null&&socket!=null){
-            try {
-                EmailComplete email = (EmailComplete) inStream.readObject();
-                log.appendText(email.toString()+"\n");
-                String userFilePath = "src/main/resources/email/sent_"+utente+".txt";
-                File userFile = new File(userFilePath);
-                if(userFile.exists() && !userFile.isDirectory()){
-                    FileInputStream in = new FileInputStream(userFile);
-                    ObjectInputStream inObjs = new ObjectInputStream(in);
-                    ArrayList<EmailComplete> availableEmails = (ArrayList<EmailComplete>)inObjs.readObject();
-                    availableEmails.add(email);
-                    FileOutputStream fileOutputStream = new FileOutputStream(userFilePath);
-                    ObjectOutputStream storico = new ObjectOutputStream(fileOutputStream);
-                    storico.writeObject(availableEmails);
-                    storico.flush();
-                    storico.close();
-                    fileOutputStream.close();
-                }
-                else {
-                    FileOutputStream fileOutputStream = new FileOutputStream(userFilePath);
-                    ObjectOutputStream storico = new ObjectOutputStream(fileOutputStream);
-                    ArrayList<EmailComplete> arr = new ArrayList<EmailComplete>();
-                    arr.add(email);
-                    storico.writeObject(arr);
-                    storico.flush();
-                    storico.close();
-                    fileOutputStream.close();
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("una connessione con un client è stata interrotta");
-        /*
-        try {
-            String name="";
-            FileWriter fileInput = new FileWriter("Email"+name);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
+
+    private RequestType parseRequest(String request){
+        if(request.contains("SEND"))
+            return RequestType.SEND_EMAIL;
+        else if(request.equals("GET ALL"))
+            return RequestType.GET_ALL;
+        else if(request.equals("CHECK"))
+            return RequestType.CHECK;
+        else if(request.contains("GET IN FROM ")){
+            if(request.split(" ").length == 3 || request.split(" ")[3].equals(""))
+                return RequestType.GET_ALL_IN;
+            else return RequestType.GET_IN;
+        }
+        else if(request.contains("GET OUT FROM")){
+            if(request.split(" ").length == 3 || request.split(" ")[3].equals(""))
+                return RequestType.GET_ALL_OUT;
+            else return RequestType.GET_OUT;
+        }
+        else return RequestType.ERROR;
+    }
+
+
+    private String getRequestEmailID(String request){
+        return  request.split(" ")[3];
+    }
+
+    private ArrayList<EmailComplete> getEmailsAfterID(ArrayList<EmailComplete> emails, String ID){
+        boolean found = false;
+        ArrayList<EmailComplete> filteredEmails = new ArrayList<>();
+        for(EmailComplete email : emails){
+            if(found)
+                filteredEmails.add(email);
+            if(email.getID().equals(ID))
+                found = true;
+        }
+        return filteredEmails;
+    }
+
+    private String[] getReceivers(String recivers){
+        return recivers.split(",");
+    }
+
+
+    private boolean validateReceivers(String recivers){
+        if(recivers.length() == 0)
+            return false;
+        String[] emails = recivers.split(",");
+        for (String email : emails){
+            if(!email.trim().toLowerCase().matches(EMAIL_REGEX))
+                return false;
+        }
+        return true;
+    }
+
+
+    private void emailSending(EmailComplete email) throws IOException, ClassNotFoundException {
+        if(!validateReceivers(email.getDestinatari()))
+            return;
+        String[] receivers = getReceivers(email.getDestinatari());
+        UUID uuid = UUID.randomUUID();
+        //in any case ID is set serverSide
+        email.setID(uuid.toString());
+        //same for date
+        email.setData(LocalDateTime.now());
+        //putting email in receiver inbox
+        for(String receiver : receivers){
+            DAO.writeEmailToFile(receiver, email,false);
+        }
+        // putting email in sender send file
+        DAO.writeEmailToFile(utente, email,true);
+    }
+
+
+
+
+
+
+
+
 }
