@@ -31,6 +31,7 @@ public class Utente {
     }
 
     public synchronized LocalDateTime getLocalDateTimeLastEmailInbox(){
+        if (inbox.size()==0) return null;
         return inbox.get(inbox.size()-1).getData();
     }
 

@@ -84,6 +84,11 @@ public class DAO {
     public static ArrayList<EmailComplete> ceckNewEmail   (String utente,LocalDateTime lastEmailInbox) throws IOException, ClassNotFoundException {
         ArrayList<EmailComplete> newMails=new ArrayList<EmailComplete>();;
         ArrayList<EmailComplete> inbox = getAllEmails(utente,true);
+        if (lastEmailInbox==null){
+            newMails =getAllEmails(utente,true);
+            if (newMails.size()==0) return null;
+            else return newMails;
+        }
         if (inbox.size()==0) return null;
         if(inbox.get(inbox.size()-1).getData().compareTo(lastEmailInbox)<=0) return null;
         addNewMails(newMails,inbox,1,lastEmailInbox);
@@ -112,6 +117,7 @@ public class DAO {
         rwl.readLock().lock();
         return rwl;
     }
+
 
     private static synchronized void readUnlock(String userFilePath, ReadWriteLock readWriteLock){
         readWriteLock.readLock().unlock();
