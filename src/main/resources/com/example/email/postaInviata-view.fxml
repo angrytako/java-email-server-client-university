@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<SplitPane fx:id="postaInv" dividerPositions="0.33403805496828753" layoutY="106.0" prefHeight="484.0" prefWidth="948.0"
-           AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0"
-           xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane fx:id="postaInv" dividerPositions="0.33403805496828753" layoutY="106.0" prefHeight="484.0" prefWidth="948.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <items>
       <ListView prefHeight="432.0" prefWidth="534.0" />
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
             <Label layoutX="18.0" layoutY="30.0" prefHeight="17.0" prefWidth="72.0" text="Oggetto" />
             <Label fx:id="oggettoLb" layoutX="112.0" layoutY="30.0" prefHeight="17.0" prefWidth="639.0" />
-            <Label layoutX="18.0" layoutY="86.0" prefHeight="17.0" prefWidth="72.0" text="Destinatari" />
-            <Label fx:id="destinatariLb" layoutX="108.0" layoutY="86.0" prefHeight="17.0" prefWidth="639.0" />
-            <Label layoutX="18.0" layoutY="140.0" prefHeight="17.0" prefWidth="72.0" text="Testo" />
-            <TextArea fx:id="bodyTA" disable="true" editable="false" focusTraversable="false" layoutX="67.0" layoutY="157.0"
-                       prefHeight="200.0" prefWidth="602.0">
-            </TextArea>
+            <Label layoutX="18.0" layoutY="60.0" prefHeight="17.0" prefWidth="72.0" text="Destinatari" />
+            <Label fx:id="destinatariLb" layoutX="112.0" layoutY="60.0" prefHeight="17.0" prefWidth="639.0" />
+            <Label layoutX="18.0" layoutY="90.0" text="Data" />
+            <Label fx:id="dataLb" layoutX="112.0" layoutY="90.0" prefHeight="17.0" prefWidth="639.0" />
+            <Label layoutX="18.0" layoutY="120.0" prefHeight="17.0" prefWidth="72.0" text="Testo" />
+            <TextArea fx:id="bodyTA" editable="false" focusTraversable="false" layoutX="112.0" layoutY="120.0" prefHeight="295.0" prefWidth="602.0">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font></TextArea>
+            <Label fx:id="idLb" layoutX="115.0" layoutY="427.0" opacity="0.59" prefHeight="17.0" prefWidth="588.0" text="ID: ">
+               <font>
+                  <Font name="Century Gothic" size="10.0" />
+               </font>
+            </Label>
          </children></AnchorPane>
    </items>
 </SplitPane>

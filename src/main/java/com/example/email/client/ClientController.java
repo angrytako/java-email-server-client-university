@@ -81,9 +81,13 @@ public class ClientController implements Initializable {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                    ((Label)inspectedEmail.lookup("#mittenteLb")).setText(selectedEmail.getMittente());
                     ((Label)inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
                     ((Label)inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                    ((Label)inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
                     ((TextArea)inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                    ((Label)inspectedEmail.lookup("#idLb")).setText("ID: "+selectedEmail.getID());
+
                 }
             });
         }catch (IOException err){
@@ -102,7 +106,9 @@ public class ClientController implements Initializable {
                     EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
                     ((Label)inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
                     ((Label)inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                    ((Label)inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
                     ((TextArea)inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                    ((Label)inspectedEmail.lookup("#idLb")).setText("ID: "+selectedEmail.getID());
                 }
             });
         }catch (IOException err){
