@@ -82,7 +82,9 @@ public class ClientController implements Initializable {
             ((Button)inspectedEmail.lookup("#delete")).setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    System.out.println("ciao");
+                    DeleteMail deleteMail=new DeleteMail( warning.visibleProperty(),
+                            (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente);
+                    deleteMail.start();
                 }
             });
             lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -164,7 +166,7 @@ public class ClientController implements Initializable {
 
 
             EmailComplete emailToServer = new EmailComplete(email,null, utente.getEmailAddress(), LocalDateTime.now());
-            /*questo da thread può diventare collable così si possono gestire le eccezioni*/
+
             Socket socket = ClientController.startServerConnection("localhost", 6868);
             if(socket==null){
                 warningInvio.setVisible(true);

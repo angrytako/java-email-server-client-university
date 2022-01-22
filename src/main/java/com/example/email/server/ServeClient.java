@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class ServeClient implements Runnable{
     private final static String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
-    private enum RequestType {CHECK, ERROR, SEND_EMAIL, GET_ALL, GET_IN, GET_OUT, GET_ALL_IN, GET_ALL_OUT };
+    private enum RequestType {DELETE,DELETE_INBOX,DELETE_SENT,CHECK, ERROR, SEND_EMAIL, GET_ALL, GET_IN, GET_OUT, GET_ALL_IN, GET_ALL_OUT };
     private Socket socket;
     private ObjectInputStream inObjStream;
     private OutputStream outputStream;
@@ -131,6 +131,60 @@ public class ServeClient implements Runnable{
                 outObjStream.writeObject(newMails);
                 break;
             }
+            case DELETE:{
+                outObjStream.writeObject("OK");
+                outObjStream.flush();
+                //ricevo id mail da cancellare
+                String id = (String) inObjStream.readObject();
+                //se la cancello invio cancellated
+                if(DAO.deleteEmail(utente,id,false)){
+                    outObjStream.writeObject("CANCELLATED");
+                    log.appendText("\n"+utente+": CANCELLATED SENT email");
+                }else{
+                    outObjStream.writeObject("ABORT");
+                    log.appendText("\n"+utente+": CANCELLATED SENT error");
+                }
+                if(DAO.deleteEmail(utente,id,true)){
+                    outObjStream.writeObject("CANCELLATED");
+                    log.appendText("\n"+utente+": CANCELLATED INBOX");
+                }else{
+                    outObjStream.writeObject("ABORT");
+                    log.appendText("\n"+utente+": CANCELLATED INBOX error");
+                }
+
+                break;
+            }
+            case DELETE_INBOX:{
+                outObjStream.writeObject("OK");
+                outObjStream.flush();
+                //ricevo id mail da cancellare
+                String id = (String) inObjStream.readObject();
+                //se la cancello invio cancellated
+                if(DAO.deleteEmail(utente,id,true)){
+                    outObjStream.writeObject("CANCELLATED");
+                    log.appendText("\n"+utente+": CANCELLATED INBOX");
+                }else{
+                    outObjStream.writeObject("ABORT");
+                    log.appendText("\n"+utente+": CANCELLATED INBOX error");
+                }
+
+                break;
+            }
+            case DELETE_SENT:{
+                outObjStream.writeObject("OK");
+                outObjStream.flush();
+                //ricevo id mail da cancellare
+                String id = (String) inObjStream.readObject();
+                //se la cancello invio cancellated
+                if(DAO.deleteEmail(utente,id,false)){
+                    outObjStream.writeObject("CANCELLATED");
+                    log.appendText("\n"+utente+": CANCELLATED SENT email");
+                }else{
+                    outObjStream.writeObject("ABORT");
+                    log.appendText("\n"+utente+": CANCELLATED SENT error");
+                }
+                break;
+            }
             case ERROR: {
                 log.appendText("\n"+utente+": Bad request");
                 outObjStream.writeObject("ERROR BAD REQUEST");
@@ -164,6 +218,12 @@ public class ServeClient implements Runnable{
             return RequestType.GET_ALL;
         else if(request.equals("CHECK"))
             return RequestType.CHECK;
+        else if(request.equals("DELETE"))
+            return RequestType.DELETE;
+        else if(request.equals("DELETE INBOX"))
+            return RequestType.DELETE_INBOX;
+        else if(request.equals("DELETE SENT"))
+            return RequestType.DELETE_SENT;
         else if(request.contains("GET IN FROM ")){
             if(request.split(" ").length == 3 || request.split(" ")[3].equals(""))
                 return RequestType.GET_ALL_IN;

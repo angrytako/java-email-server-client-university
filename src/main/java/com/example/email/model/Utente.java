@@ -17,7 +17,6 @@ public class Utente {
 
     public Utente(String nome) {
         this.emailAddress = nome;
-        this.emails = new ArrayList<EmailComplete>();
         this.inbox = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.sentEmails = new SimpleListProperty<>(FXCollections.observableArrayList());
     }
@@ -35,5 +34,36 @@ public class Utente {
         return inbox.get(inbox.size()-1).getData();
     }
 
+    public synchronized void deleteEmail(EmailComplete emailToDelete){
 
-}
+        if(emailToDelete.getMittente().equals(emailAddress)){
+            for (EmailComplete email:sentEmails) {
+                if (email.getID().equals(emailToDelete.getID())) {
+                    sentEmails.remove(email);
+                }
+            }
+            String[] receivers = emailToDelete.getDestinatari().split(",");
+            for(String receiver : receivers){
+                if(receiver.equals(emailAddress)) {
+                    for (EmailComplete email:inbox) {
+                        if (email.getID().equals(emailToDelete.getID())) {
+                            inbox.remove(email);
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            for (EmailComplete email:inbox) {
+                if (email.getID().equals(emailToDelete.getID())) {
+                    inbox.remove(email);
+                }
+            }
+        }
+
+
+    }
+
+
+
+    }
