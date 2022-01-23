@@ -5,9 +5,7 @@ import com.example.email.model.Utente;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+
 
 public class OutToServer extends Thread{
     private Socket socket;
@@ -42,9 +40,9 @@ public class OutToServer extends Thread{
             if(answer.equals("OK")) {
                 EmailComplete sentEmail = (EmailComplete) objInStream.readObject();
                 System.out.println(sentEmail.toString());
-                user.sentEmails.add(sentEmail);
+                user.sentEmailsProperty().add(sentEmail);
                 if(sentEmail.getDestinatari().contains(user.getEmailAddress()))
-                    user.inbox.add(sentEmail);
+                    user.inboxProperty().add(sentEmail);
             }else{
                 //TODO error handling
                 return;

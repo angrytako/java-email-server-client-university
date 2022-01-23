@@ -4,15 +4,17 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Utente {
     private String emailAddress;  //es@gmail.com
-    public SimpleListProperty<EmailComplete> inbox;
-    public SimpleListProperty<EmailComplete> sentEmails;
+    private SimpleListProperty<EmailComplete> inbox;
+    private SimpleListProperty<EmailComplete> sentEmails;
 
     public Utente(String nome) {
         this.emailAddress = nome;
@@ -24,6 +26,14 @@ public class Utente {
         return emailAddress;
     }
 
+
+    public SimpleListProperty<EmailComplete> inboxProperty() {
+        return inbox;
+    }
+
+    public SimpleListProperty<EmailComplete> sentEmailsProperty() {
+        return sentEmails;
+    }
 
     public synchronized LocalDateTime getLocalDateTimeLastEmailInbox(){
         if (inbox.size()==0) return null;
@@ -38,16 +48,19 @@ public class Utente {
     }
 
     public synchronized void deleteEmail(EmailComplete emailToDelete){
-        EmailComplete toDelete=null;
-        if(emailToDelete.getMittente().equals(emailAddress)){
-            System.out.println(sentEmails);
 
+        System.out.println(Thread.currentThread().getName());
+        EmailComplete toDelete=null;
+
+        if(emailToDelete.getMittente().equals(emailAddress))
+        {
+            System.out.println(sentEmails);
             for (EmailComplete email:sentEmails) {
                 if (email.getID().equals(emailToDelete.getID())) {
                     toDelete=email;
                 }
             }
-            if(toDelete!=null)sentEmails.remove(toDelete);
+            if(toDelete!=null)sentEmails.removeAll(toDelete);
             System.out.println(sentEmails);
 
             String[] receivers = emailToDelete.getDestinatari().split(",");
@@ -60,20 +73,22 @@ public class Utente {
                             toDelete=email;
                         }
                     }
-                    inbox.remove(toDelete);
+                    inbox.removeAll(toDelete);
                     System.out.println(inbox);
                 }
             }
         }
-        else{
-            System.out.println(inbox);
+        else
+        {
             for (EmailComplete email:inbox) {
                 if (email.getID().equals(emailToDelete.getID())) {
                     toDelete=email;
+                    break;
                 }
             }
-            inbox.remove(toDelete);
-            System.out.println(inbox);
+            System.out.println(inbox.getSize());
+            inbox.removeAll(toDelete);
+            System.out.println(inbox.getSize());
         }
 
 

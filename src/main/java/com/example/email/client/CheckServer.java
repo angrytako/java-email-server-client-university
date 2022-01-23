@@ -15,7 +15,8 @@ public class CheckServer extends Thread{
     private ClientController clientController;
 
 
-    public CheckServer(BooleanProperty warning,BooleanProperty warningInvio,Boolean emails_recived, ClientController clientController) {
+    public CheckServer(BooleanProperty warning,BooleanProperty warningInvio,Boolean emails_recived,
+                       ClientController clientController) {
         this.setDaemon(true);
         this.warning = warning;
         this.warningInvio = warningInvio;
@@ -23,9 +24,12 @@ public class CheckServer extends Thread{
         this.clientController = clientController;
     }
 
-
-
-
+    @Override
+    public synchronized void start() {
+        System.out.println("CIAO");
+        System.out.println(Thread.currentThread().getStackTrace());
+        super.start();
+    }
 
     @Override
     public void run() {

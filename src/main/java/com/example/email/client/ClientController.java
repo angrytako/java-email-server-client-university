@@ -26,6 +26,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ClientController implements Initializable {
     private final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
@@ -78,13 +81,33 @@ public class ClientController implements Initializable {
             postaSp = postaRicevuta.load();
             ListView lv =  ((ListView) postaSp.getItems().get(0));
             AnchorPane inspectedEmail =  ((AnchorPane) postaSp.getItems().get(1));
-            lv.itemsProperty().bindBidirectional(utente.inbox);
-            ((Button)inspectedEmail.lookup("#delete")).setOnMouseClicked(new EventHandler<MouseEvent>() {
+            lv.itemsProperty().bindBidirectional(utente.inboxProperty());
+            ((Button)inspectedEmail.lookup("#delete")).setOnAction( new EventHandler<ActionEvent>() {
                 @Override
-                public void handle(MouseEvent mouseEvent) {
+                public void handle(ActionEvent mouseEvent) {
+
                     DeleteMail deleteMail=new DeleteMail( warning.visibleProperty(),
                             (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente);
-                    deleteMail.start();
+                    Thread deleteThread = new Thread(deleteMail);
+                    lv.getSelectionModel().selectFirst();
+                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                    if(selectedEmail != null) {
+                        ((Label) inspectedEmail.lookup("#mittenteLb")).setText(selectedEmail.getMittente());
+                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
+                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                        ((Label) inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
+                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
+                    }else{
+                        ((Label) inspectedEmail.lookup("#mittenteLb")).setText("");
+                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText("");
+                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText("");
+                        ((Label) inspectedEmail.lookup("#dataLb")).setText("");
+                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText("");
+                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: ");
+                    }
+                    deleteThread.start();
+
                 }
             });
 
@@ -156,7 +179,35 @@ public class ClientController implements Initializable {
             postaInv = postaInviata.load();
             ListView lv =  ((ListView) postaInv.getItems().get(0));
             AnchorPane inspectedEmail =  ((AnchorPane) postaInv.getItems().get(1));
-            lv.itemsProperty().bindBidirectional(utente.sentEmails);
+
+            lv.itemsProperty().bindBidirectional(utente.sentEmailsProperty());
+            ((Button)inspectedEmail.lookup("#delete")).setOnAction( new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent mouseEvent) {
+                    DeleteMail deleteMail=new DeleteMail( warning.visibleProperty(),
+                            (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente);
+                    Thread deleteThread = new Thread(deleteMail);
+
+                    lv.getSelectionModel().selectFirst();
+                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                    if(selectedEmail != null) {
+                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
+                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                        ((Label) inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
+                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
+                    }else{
+                        ((Label) inspectedEmail.lookup("#mittenteLb")).setText("");
+                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText("");
+                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText("");
+                        ((Label) inspectedEmail.lookup("#dataLb")).setText("");
+                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText("");
+                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: ");
+                    }
+                    deleteThread.start();
+
+                }
+            });
             lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -294,9 +345,10 @@ public class ClientController implements Initializable {
                 return;
             }
             case POSTA_RICEVUTA:{
-                state = statesEnum.INVIO;
                 masterAp.getChildren().remove(postaSp);
                 masterAp.getChildren().add(invioAp);
+                state = statesEnum.INVIO;
+
                 break;
             }
             case POSTA_IN_USCITA:{

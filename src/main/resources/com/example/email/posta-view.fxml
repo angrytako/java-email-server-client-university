@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<SplitPane fx:id="postaSp" dividerPositions="0.33403805496828753" layoutY="106.0" prefHeight="484.0" prefWidth="948.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane fx:id="postaSp" dividerPositions="0.33403805496828753" layoutY="106.0" prefHeight="484.0" prefWidth="948.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
    <items>
       <ListView prefHeight="432.0" prefWidth="534.0" />
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -41,10 +36,10 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Button fx:id="forwardInBtn" layoutX="112.0" layoutY="482.0" mnemonicParsing="false" text="Inoltra" />
-            <Button fx:id="answBtn" layoutX="195.0" layoutY="482.0" mnemonicParsing="false" text="Rispondi" />
-            <Button fx:id="answAllBtn" layoutX="285.0" layoutY="482.0" mnemonicParsing="false" text="Rispondi a tutti" />
-            <Label alignment="CENTER" layoutY="-1.0" prefHeight="17.0" prefWidth="754.0" text="Posta inviata">
+            <Button fx:id="forwardInBtn" layoutX="112.0" layoutY="460.0" mnemonicParsing="false" text="Inoltra" />
+            <Button fx:id="answBtn" layoutX="195.0" layoutY="460.0" mnemonicParsing="false" text="Rispondi" />
+            <Button fx:id="answAllBtn" layoutX="285.0" layoutY="460.0" mnemonicParsing="false" text="Rispondi a tutti" />
+            <Label alignment="CENTER" layoutY="-1.0" prefHeight="17.0" prefWidth="754.0" text="Posta Ricevuta">
                <font>
                   <Font size="18.0" />
                </font>

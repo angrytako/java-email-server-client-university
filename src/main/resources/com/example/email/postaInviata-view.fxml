@@ -8,6 +8,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <SplitPane fx:id="postaInv" dividerPositions="0.33403805496828753" layoutY="106.0" prefHeight="620.0" prefWidth="948.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="106.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <items>
       <ListView prefHeight="432.0" prefWidth="534.0" />
@@ -29,6 +31,14 @@
                   <Font name="Century Gothic" size="10.0" />
                </font>
             </Label>
+            <Button fx:id="delete" layoutX="651.0" layoutY="41.0" mnemonicParsing="false">
+               <graphic>
+                  <ImageView fitHeight="54.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../img/delate.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
             <Button fx:id="forwardOutBtn" layoutX="112.0" layoutY="462.0" mnemonicParsing="false" text="Inoltra" />
             <Label alignment="CENTER" layoutX="6.0" layoutY="1.0" prefHeight="17.0" prefWidth="740.0" text="Posta Inviata">
                <font>

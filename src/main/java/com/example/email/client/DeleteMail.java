@@ -8,11 +8,12 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class DeleteMail extends Thread{
+public class DeleteMail implements Runnable{
     private EmailComplete emailToDelete;
     private Utente utente;
     private  BooleanProperty warning;
     public DeleteMail(BooleanProperty warning,EmailComplete emailToDelete, Utente utente) {
+
         this.emailToDelete = emailToDelete;
         this.utente = utente;
         this.warning=warning;
@@ -60,6 +61,7 @@ public class DeleteMail extends Thread{
                     if(result.equals("CANCELLATED")){
                         //la mail è stata cancellata aggiorno il modello
                         utente.deleteEmail(emailToDelete);
+
                         System.out.println("email cancellata");
                     }else if(result.equals("ABORT")){
                         System.out.println("Errore nella cancellazione del file lato server");
@@ -76,6 +78,6 @@ public class DeleteMail extends Thread{
         }
 
 
-
+        System.out.println("Sono il Thread, sono arrivato alla fine");
     }
 }
