@@ -24,12 +24,6 @@ public class CheckServer extends Thread{
         this.clientController = clientController;
     }
 
-    @Override
-    public synchronized void start() {
-        System.out.println("CIAO");
-        System.out.println(Thread.currentThread().getStackTrace());
-        super.start();
-    }
 
     @Override
     public void run() {
@@ -62,7 +56,7 @@ public class CheckServer extends Thread{
                         objOutStream.writeObject(clientController.utente.getEmailAddress());
                         objOutStream.writeObject("CHECK");
                         objOutStream.flush();
-                      //  System.out.println("CHECK");
+                        System.out.println("CHECK SERVER");
                         String answer = (String) objInStream.readObject();
                         if(answer.equals("OK")){
                             objOutStream.writeObject(clientController.utente.getLocalDateTimeLastEmailInbox());

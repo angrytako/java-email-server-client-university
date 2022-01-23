@@ -93,10 +93,11 @@ public class ClientController implements Initializable {
                     {
                         Thread deleteThread = new Thread(new DeleteMail( warning.visibleProperty(),
                                 (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente));
-                        EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                        Object lastChoise = lv.getSelectionModel().getSelectedItem();
                         lv.getSelectionModel().selectLast();
+                        EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
                         if(lv.getSelectionModel().getSelectedIndex()==0 || selectedEmail == null ||
-                                lv.getSelectionModel().getSelectedItem().equals(selectedEmail) ){
+                                lv.getSelectionModel().getSelectedIndex()==-1 || lv.getSelectionModel().getSelectedItem().equals(lastChoise)){
                             ((Label) inspectedEmail.lookup("#mittenteLb")).setText("");
                             ((Label) inspectedEmail.lookup("#oggettoLb")).setText("");
                             ((Label) inspectedEmail.lookup("#destinatariLb")).setText("");
@@ -112,7 +113,12 @@ public class ClientController implements Initializable {
                             ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
                             ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
                         }
-
+                        Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
+                            @Override
+                            public void uncaughtException(Thread th, Throwable ex) {
+                            }
+                        };
+                        deleteThread.setUncaughtExceptionHandler(h);
                         deleteThread.start();
                     }
                 }
@@ -127,10 +133,10 @@ public class ClientController implements Initializable {
                         String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
                         String sender = ((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString();
 
-                        String body =("Utente: "+sender.toString() + "\n"+
-                                "Data: "+ ((Label)inspectedEmail.lookup("#dataLb")).getText().toString()+ "\n"+
-                                "Testo:\n"+
-                                ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString() +
+                        String body =("\n" +
+                        ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString()+ "\n"+
+                                "Utente: "+sender.toString() + "\n"+
+                                "Data: "+ ((Label)inspectedEmail.lookup("#dataLb")).getText().toString()+
                                 "\n------------------------------------------------\n"
                         );
 
@@ -152,11 +158,10 @@ public class ClientController implements Initializable {
                     if(selectedEmail != null){
                         String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
                         String sender = ((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString();
-                        String body =("Utente: "+sender.toString() + "\n"+
+                        String body =("\n"+ ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString() +
+                                "Utente: "+sender.toString() + "\n"+
                                 "Data: "+ ((Label)inspectedEmail.lookup("#dataLb")).getText().toString()+ "\n"+
-                                "Testo:\n"+
-                                ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString() +
-                                "\n------------------------------------------------\n"
+                                "------------------------------------------------\n"
                         );
                         String receivers =  ((Label)inspectedEmail.lookup("#destinatariLb")).getText().toString();
                         String destination = removeSelfAndConcat(sender,receivers);
@@ -285,8 +290,7 @@ public class ClientController implements Initializable {
                                 "\n------------------------------------------------\n"
                         );
 
-                        //setEmailToSend(subject,"",body);
-
+                        setEmailToSend(subject,"",body);
                         messaaggioTF.setText("Inoltra");
                         oggettoTF.setEditable(false);
                         testoTA.setEditable(false);

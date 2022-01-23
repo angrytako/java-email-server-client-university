@@ -27,7 +27,6 @@ public class DeleteMail extends Thread{
             warning.set(true);
             System.out.println("Not Conneccted with server");
         }else{
-            System.out.println(emailToDelete);
             try {
                 OutputStream outStream = socket.getOutputStream();
                 InputStream inStream = socket.getInputStream();
@@ -58,12 +57,10 @@ public class DeleteMail extends Thread{
                     //leggo cancellatted, cancello la mail
                     //else errore server faccio vedere warning
                     String result = (String) objInStream.readObject();
-                    System.out.println(result);
                     if(result.equals("CANCELLATED")){
                         //la mail è stata cancellata aggiorno il modello
                         utente.deleteEmail(emailToDelete);
-
-                        System.out.println("email cancellata");
+                        System.out.println("email deleted");
                     }else if(result.equals("ABORT")){
                         System.out.println("Errore nella cancellazione del file lato server");
                     }else  warning.set(true);
@@ -79,6 +76,5 @@ public class DeleteMail extends Thread{
         }
 
 
-        System.out.println("Sono il Thread, sono arrivato alla fine");
     }
 }

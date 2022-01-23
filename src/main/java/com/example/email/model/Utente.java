@@ -53,19 +53,16 @@ public class Utente {
 
         if(emailToDelete.getMittente().equals(emailAddress))
         {
-            System.out.println(sentEmails);
             for (EmailComplete email:sentEmails) {
                 if (email.getID().equals(emailToDelete.getID())) {
                     toDelete=email;
                 }
             }
             if(toDelete!=null)sentEmails.removeAll(toDelete);
-            System.out.println(sentEmails);
 
             String[] receivers = emailToDelete.getDestinatari().split(",");
             for(String receiver : receivers){
                 if(receiver.equals(emailAddress)) {
-                    System.out.println(inbox);
                     toDelete=null;
                     for (EmailComplete email:inbox) {
                         if (email.getID().equals(emailToDelete.getID())) {
@@ -73,7 +70,6 @@ public class Utente {
                         }
                     }
                     if(toDelete!=null)inbox.removeAll(toDelete);
-                    System.out.println(inbox);
                 }
             }
         }
@@ -84,9 +80,7 @@ public class Utente {
                     toDelete=email;
                 }
             }
-            System.out.println(inbox.getSize());
             if(toDelete!=null)inbox.removeAll(toDelete);
-            System.out.println(inbox.getSize());
         }
 
 
