@@ -21,7 +21,7 @@
                   <Font name="Arial" size="18.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" layoutX="11.0" layoutY="10.0" prefHeight="17.0" prefWidth="894.0" text="Invia">
+            <Label fx:id="messaaggioTF" alignment="CENTER" layoutX="11.0" layoutY="10.0" prefHeight="17.0" prefWidth="894.0" text="Invia">
                <font>
                   <Font size="18.0" />
                </font>

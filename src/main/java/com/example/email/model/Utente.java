@@ -73,7 +73,7 @@ public class Utente {
                             toDelete=email;
                         }
                     }
-                    inbox.removeAll(toDelete);
+                    if(toDelete!=null)inbox.removeAll(toDelete);
                     System.out.println(inbox);
                 }
             }
@@ -83,11 +83,10 @@ public class Utente {
             for (EmailComplete email:inbox) {
                 if (email.getID().equals(emailToDelete.getID())) {
                     toDelete=email;
-                    break;
                 }
             }
             System.out.println(inbox.getSize());
-            inbox.removeAll(toDelete);
+            if(toDelete!=null)inbox.removeAll(toDelete);
             System.out.println(inbox.getSize());
         }
 

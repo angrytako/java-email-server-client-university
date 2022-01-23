@@ -51,7 +51,7 @@ public class ClientController implements Initializable {
     @FXML
     AnchorPane masterAp, invioAp;
     @FXML
-    Label nomeUtente,warning,warningInvio;
+    Label nomeUtente,warning,warningInvio,messaaggioTF;
 
 
 
@@ -85,29 +85,32 @@ public class ClientController implements Initializable {
             ((Button)inspectedEmail.lookup("#delete")).setOnAction( new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent mouseEvent) {
+                    if(lv.getSelectionModel().getSelectedItem()!=null)
+                    {
+                        Thread deleteThread = new Thread(new DeleteMail( warning.visibleProperty(),
+                                (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente));
+                        EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                        lv.getSelectionModel().selectLast();
+                        if(lv.getSelectionModel().getSelectedIndex()==0 || selectedEmail == null ||
+                                lv.getSelectionModel().getSelectedItem().equals(selectedEmail) ){
+                            ((Label) inspectedEmail.lookup("#mittenteLb")).setText("");
+                            ((Label) inspectedEmail.lookup("#oggettoLb")).setText("");
+                            ((Label) inspectedEmail.lookup("#destinatariLb")).setText("");
+                            ((Label) inspectedEmail.lookup("#dataLb")).setText("");
+                            ((TextArea) inspectedEmail.lookup("#bodyTA")).setText("");
+                            ((Label) inspectedEmail.lookup("#idLb")).setText("ID: ");
+                        }
+                        else {
+                            ((Label) inspectedEmail.lookup("#mittenteLb")).setText(selectedEmail.getMittente());
+                            ((Label) inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
+                            ((Label) inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                            ((Label) inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
+                            ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                            ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
+                        }
 
-                    DeleteMail deleteMail=new DeleteMail( warning.visibleProperty(),
-                            (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente);
-                    Thread deleteThread = new Thread(deleteMail);
-                    lv.getSelectionModel().selectFirst();
-                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
-                    if(selectedEmail != null) {
-                        ((Label) inspectedEmail.lookup("#mittenteLb")).setText(selectedEmail.getMittente());
-                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
-                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
-                        ((Label) inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
-                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
-                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
-                    }else{
-                        ((Label) inspectedEmail.lookup("#mittenteLb")).setText("");
-                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText("");
-                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText("");
-                        ((Label) inspectedEmail.lookup("#dataLb")).setText("");
-                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText("");
-                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: ");
+                        deleteThread.start();
                     }
-                    deleteThread.start();
-
                 }
             });
 
@@ -121,7 +124,11 @@ public class ClientController implements Initializable {
                         String sender = ((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString();
                         String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
                         setEmailToSend(subject,sender,body);
-                        inviaSwitch(new ActionEvent());
+
+                        messaaggioTF.setText("Rispondi");
+                        oggettoTF.setEditable(false);
+                        destinatariTF.setEditable(false);
+                        spedizioneSwitch();
                     }
                 }
             });
@@ -136,7 +143,11 @@ public class ClientController implements Initializable {
                         String receivers =  ((Label)inspectedEmail.lookup("#destinatariLb")).getText().toString();
                         String destination = removeSelfAndConcat(sender,receivers);
                         setEmailToSend(subject,destination,body);
-                        inviaSwitch(new ActionEvent());
+
+                        messaaggioTF.setText("Rispondi a tutti");
+                        oggettoTF.setEditable(false);
+                        destinatariTF.setEditable(false);
+                        spedizioneSwitch();
                     }
                 }
             });
@@ -148,7 +159,11 @@ public class ClientController implements Initializable {
                         String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
                         String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
                         setEmailToSend(subject,"",body);
-                        inviaSwitch(new ActionEvent());
+
+                        messaaggioTF.setText("Inoltra");
+                        oggettoTF.setEditable(false);
+                        testoTA.setEditable(false);
+                        spedizioneSwitch();
                     }
                 }
             });
@@ -184,27 +199,28 @@ public class ClientController implements Initializable {
             ((Button)inspectedEmail.lookup("#delete")).setOnAction( new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent mouseEvent) {
-                    DeleteMail deleteMail=new DeleteMail( warning.visibleProperty(),
-                            (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente);
-                    Thread deleteThread = new Thread(deleteMail);
+                    if(lv.getSelectionModel().getSelectedItem()!=null){
+                        Thread deleteThread = new Thread(new DeleteMail( warning.visibleProperty(),
+                                (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente));
 
-                    lv.getSelectionModel().selectFirst();
-                    EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
-                    if(selectedEmail != null) {
-                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
-                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
-                        ((Label) inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
-                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
-                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
-                    }else{
-                        ((Label) inspectedEmail.lookup("#mittenteLb")).setText("");
-                        ((Label) inspectedEmail.lookup("#oggettoLb")).setText("");
-                        ((Label) inspectedEmail.lookup("#destinatariLb")).setText("");
-                        ((Label) inspectedEmail.lookup("#dataLb")).setText("");
-                        ((TextArea) inspectedEmail.lookup("#bodyTA")).setText("");
-                        ((Label) inspectedEmail.lookup("#idLb")).setText("ID: ");
+                        EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
+                        lv.getSelectionModel().selectLast();
+                        if(lv.getSelectionModel().getSelectedIndex()==0 || selectedEmail == null ||
+                                lv.getSelectionModel().getSelectedItem().equals(selectedEmail) ){
+                            ((Label) inspectedEmail.lookup("#oggettoLb")).setText("");
+                            ((Label) inspectedEmail.lookup("#destinatariLb")).setText("");
+                            ((Label) inspectedEmail.lookup("#dataLb")).setText("");
+                            ((TextArea) inspectedEmail.lookup("#bodyTA")).setText("");
+                            ((Label) inspectedEmail.lookup("#idLb")).setText("ID: ");
+                        }else{
+                            ((Label) inspectedEmail.lookup("#oggettoLb")).setText(selectedEmail.getOggetto());
+                            ((Label) inspectedEmail.lookup("#destinatariLb")).setText(selectedEmail.getDestinatari());
+                            ((Label) inspectedEmail.lookup("#dataLb")).setText(selectedEmail.getData().toString());
+                            ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
+                            ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
+                        }
+                        deleteThread.start();
                     }
-                    deleteThread.start();
 
                 }
             });
@@ -231,7 +247,11 @@ public class ClientController implements Initializable {
                         String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
                         String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
                         setEmailToSend(subject,"",body);
-                        inviaSwitch(new ActionEvent());
+
+                        messaaggioTF.setText("Inoltra");
+                        oggettoTF.setEditable(false);
+                        testoTA.setEditable(false);
+                        spedizioneSwitch();
 
                     }
                 }
@@ -338,7 +358,7 @@ public class ClientController implements Initializable {
 
     }
 
-    public void inviaSwitch(ActionEvent e){
+    private void spedizioneSwitch(){
         switch (state){
             case INVIO:
             {
@@ -354,6 +374,40 @@ public class ClientController implements Initializable {
             case POSTA_IN_USCITA:{
                 masterAp.getChildren().remove(postaInv);
                 masterAp.getChildren().add(invioAp);
+                state = statesEnum.INVIO;
+                break;
+            }
+        }
+
+    }
+    private void setUpInviaVista(){
+        messaaggioTF.setText("Invia");
+        oggettoTF.setEditable(true);
+        destinatariTF.setEditable(true);
+        testoTA.setEditable(true);
+        oggettoTF.setText("");
+        destinatariTF.setText("");
+        testoTA.setText("");
+    }
+
+    public void inviaSwitch(ActionEvent e){
+        switch (state){
+            case INVIO:
+            {
+                setUpInviaVista();
+                return;
+            }
+            case POSTA_RICEVUTA:{
+                masterAp.getChildren().remove(postaSp);
+                masterAp.getChildren().add(invioAp);
+                setUpInviaVista();
+                state = statesEnum.INVIO;
+                break;
+            }
+            case POSTA_IN_USCITA:{
+                masterAp.getChildren().remove(postaInv);
+                masterAp.getChildren().add(invioAp);
+                setUpInviaVista();
                 state = statesEnum.INVIO;
                 break;
             }
