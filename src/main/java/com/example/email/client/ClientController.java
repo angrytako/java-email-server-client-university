@@ -227,8 +227,8 @@ public class ClientController implements Initializable {
                 @Override
                 public void handle(ActionEvent mouseEvent) {
                     if(lv.getSelectionModel().getSelectedItem()!=null){
-                        Thread deleteThread = new Thread(new DeleteMail( warning.visibleProperty(),
-                                (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente));
+                        DeleteMail deleteThread = new DeleteMail( warning.visibleProperty(),
+                                (EmailComplete) lv.getSelectionModel().getSelectedItem(),utente);
 
                         EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
                         lv.getSelectionModel().selectLast();
@@ -246,6 +246,12 @@ public class ClientController implements Initializable {
                             ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
                             ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
                         }
+                        Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
+                            @Override
+                            public void uncaughtException(Thread th, Throwable ex) {
+                            }
+                        };
+                        deleteThread.setUncaughtExceptionHandler(h);
                         deleteThread.start();
                     }
 

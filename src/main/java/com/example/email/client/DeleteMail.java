@@ -8,7 +8,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class DeleteMail implements Runnable{
+public class DeleteMail extends Thread{
+
     private EmailComplete emailToDelete;
     private Utente utente;
     private  BooleanProperty warning;
@@ -47,7 +48,7 @@ public class DeleteMail implements Runnable{
                     //email ricevuta
                     action="DELETE INBOX";
                 }
-                System.out.println("Azzione: "+action);
+                System.out.println("Azione: "+action);
                 objOutStream.writeObject(action);
                 objOutStream.flush();
                 String answer = (String) objInStream.readObject();

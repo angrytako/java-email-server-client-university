@@ -49,7 +49,6 @@ public class Utente {
 
     public synchronized void deleteEmail(EmailComplete emailToDelete){
 
-        System.out.println(Thread.currentThread().getName());
         EmailComplete toDelete=null;
 
         if(emailToDelete.getMittente().equals(emailAddress))
