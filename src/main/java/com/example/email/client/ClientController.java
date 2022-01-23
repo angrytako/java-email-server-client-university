@@ -122,12 +122,20 @@ public class ClientController implements Initializable {
                     if(selectedEmail != null){
                         String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
                         String sender = ((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString();
-                        String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
+
+                        String body =("Utente: "+sender.toString() + "\n"+
+                                "Data: "+ ((Label)inspectedEmail.lookup("#dataLb")).getText().toString()+ "\n"+
+                                "Testo:\n"+
+                                ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString() +
+                                "\n------------------------------------------------\n"
+                        );
+
                         setEmailToSend(subject,sender,body);
 
                         messaaggioTF.setText("Rispondi");
                         oggettoTF.setEditable(false);
                         destinatariTF.setEditable(false);
+                        testoTA.setEditable(true);
                         spedizioneSwitch();
                     }
                 }
@@ -139,7 +147,12 @@ public class ClientController implements Initializable {
                     if(selectedEmail != null){
                         String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
                         String sender = ((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString();
-                        String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
+                        String body =("Utente: "+sender.toString() + "\n"+
+                                "Data: "+ ((Label)inspectedEmail.lookup("#dataLb")).getText().toString()+ "\n"+
+                                "Testo:\n"+
+                                ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString() +
+                                "\n------------------------------------------------\n"
+                        );
                         String receivers =  ((Label)inspectedEmail.lookup("#destinatariLb")).getText().toString();
                         String destination = removeSelfAndConcat(sender,receivers);
                         setEmailToSend(subject,destination,body);
@@ -147,6 +160,7 @@ public class ClientController implements Initializable {
                         messaaggioTF.setText("Rispondi a tutti");
                         oggettoTF.setEditable(false);
                         destinatariTF.setEditable(false);
+                        testoTA.setEditable(true);
                         spedizioneSwitch();
                     }
                 }
@@ -157,12 +171,18 @@ public class ClientController implements Initializable {
                     EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
                     if(selectedEmail != null){
                         String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
-                        String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
+                        String body =("Utente: "+((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString() + "\n"+
+                                "Data: "+ ((Label)inspectedEmail.lookup("#dataLb")).getText().toString()+ "\n"+
+                                "Testo:\n"+
+                                ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString() +
+                                "\n------------------------------------------------\n"
+                        );
                         setEmailToSend(subject,"",body);
 
                         messaaggioTF.setText("Inoltra");
                         oggettoTF.setEditable(false);
                         testoTA.setEditable(false);
+                        destinatariTF.setEditable(true);
                         spedizioneSwitch();
                     }
                 }
@@ -245,12 +265,18 @@ public class ClientController implements Initializable {
                     EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
                     if(selectedEmail != null){
                         String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
-                        String body =  ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString();
+                        String body =("Utente: "+((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString() + "\n"+
+                                "Data: "+ ((Label)inspectedEmail.lookup("#dataLb")).getText().toString()+ "\n"+
+                                "Testo:\n"+
+                                ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString() +
+                                "\n------------------------------------------------\n"
+                        );
                         setEmailToSend(subject,"",body);
 
                         messaaggioTF.setText("Inoltra");
                         oggettoTF.setEditable(false);
                         testoTA.setEditable(false);
+                        destinatariTF.setEditable(true);
                         spedizioneSwitch();
 
                     }
