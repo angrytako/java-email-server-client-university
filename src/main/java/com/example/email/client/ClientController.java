@@ -52,6 +52,10 @@ public class ClientController implements Initializable {
     AnchorPane masterAp, invioAp;
     @FXML
     Label nomeUtente,warning,warningInvio,messaaggioTF;
+    @FXML
+    Button inviaBtn;
+    @FXML
+    ButtonBar navBtnBar;
 
 
 
@@ -137,6 +141,7 @@ public class ClientController implements Initializable {
                         destinatariTF.setEditable(false);
                         testoTA.setEditable(true);
                         spedizioneSwitch();
+                        inviaBtn.requestFocus();
                     }
                 }
             });
@@ -162,6 +167,7 @@ public class ClientController implements Initializable {
                         destinatariTF.setEditable(false);
                         testoTA.setEditable(true);
                         spedizioneSwitch();
+                        inviaBtn.requestFocus();
                     }
                 }
             });
@@ -184,6 +190,7 @@ public class ClientController implements Initializable {
                         testoTA.setEditable(false);
                         destinatariTF.setEditable(true);
                         spedizioneSwitch();
+                        inviaBtn.requestFocus();
                     }
                 }
             });
@@ -265,19 +272,21 @@ public class ClientController implements Initializable {
                     EmailComplete selectedEmail = ((EmailComplete) lv.getSelectionModel().getSelectedItem());
                     if(selectedEmail != null){
                         String subject = ((Label)inspectedEmail.lookup("#oggettoLb")).getText().toString();
-                        String body =("Utente: "+((Label)inspectedEmail.lookup("#mittenteLb")).getText().toString() + "\n"+
+                        String body =("Utente: "+ utente.getEmailAddress() + "\n"+
                                 "Data: "+ ((Label)inspectedEmail.lookup("#dataLb")).getText().toString()+ "\n"+
                                 "Testo:\n"+
                                 ((TextArea)inspectedEmail.lookup("#bodyTA")).getText().toString() +
                                 "\n------------------------------------------------\n"
                         );
-                        setEmailToSend(subject,"",body);
+
+                        //setEmailToSend(subject,"",body);
 
                         messaaggioTF.setText("Inoltra");
                         oggettoTF.setEditable(false);
                         testoTA.setEditable(false);
                         destinatariTF.setEditable(true);
                         spedizioneSwitch();
+                        inviaBtn.requestFocus();
 
                     }
                 }

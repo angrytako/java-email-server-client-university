@@ -33,7 +33,7 @@
                 <Font size="36.0" />
             </font>
         </Label>
-        <ButtonBar layoutX="5.0" layoutY="53.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="39.0" prefWidth="600.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+        <ButtonBar fx:id="navBtnBar" layoutX="5.0" layoutY="53.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="39.0" prefWidth="600.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
             <buttons>
             <Label fx:id="warning" alignment="TOP_CENTER" prefHeight="25.0" prefWidth="254.0" text="Server non attivo" textAlignment="CENTER" textFill="#f52424" textOverrun="WORD_ELLIPSIS" visible="false" wrapText="true">
                <font>
@@ -48,7 +48,7 @@
                <cursor>
                   <Cursor fx:constant="OPEN_HAND" />
                </cursor></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#inviaSwitch" text="Spedizione">
+                <Button fx:id="inviaBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#inviaSwitch" text="Spedizione">
                <cursor>
                   <Cursor fx:constant="OPEN_HAND" />
                </cursor></Button>
