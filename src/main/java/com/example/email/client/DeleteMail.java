@@ -2,6 +2,7 @@ package com.example.email.client;
 
 import com.example.email.model.EmailComplete;
 import com.example.email.model.Utente;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 
 import java.io.*;
@@ -24,7 +25,7 @@ public class DeleteMail extends Thread{
     public void run() {
         Socket socket = ClientController.startServerConnection("localhost", 6868);
         if (socket == null) {
-            warning.set(true);
+            Platform.runLater(() -> {warning.set(true);});
             System.out.println("Not Conneccted with server");
         }else{
             try {
@@ -63,11 +64,11 @@ public class DeleteMail extends Thread{
                         System.out.println("email deleted");
                     }else if(result.equals("ABORT")){
                         System.out.println("Errore nella cancellazione del file lato server");
-                    }else  warning.set(true);
+                    }else   Platform.runLater(() -> {warning.set(true);});
 
 
                 }else{
-                    warning.set(true);
+                    Platform.runLater(() -> {warning.set(true);});
                     System.out.println("Error with server comunication");
                 }
             } catch (IOException | ClassNotFoundException e) {

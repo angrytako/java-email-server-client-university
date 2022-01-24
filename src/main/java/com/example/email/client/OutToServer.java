@@ -2,6 +2,10 @@ package com.example.email.client;
 
 import com.example.email.model.EmailComplete;
 import com.example.email.model.Utente;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.net.Socket;
@@ -11,10 +15,12 @@ public class OutToServer extends Thread{
     private Socket socket;
     private EmailComplete email;
     private Utente user;
-    public OutToServer(EmailComplete email, Utente user,Socket socket) {
+    private Label warningLabel;
+    public OutToServer(EmailComplete email, Utente user,Socket socket, Label warningLabel) {
         this.email = email;
         this.user = user;
         this.socket=socket;
+        this.warningLabel = warningLabel;
     }
 
 
@@ -33,18 +39,36 @@ public class OutToServer extends Thread{
                 objOutStream.writeObject(email);
                 objOutStream.flush();
             }else {
-                //TODO error handling
+                final String answerSup = answer;
+                Platform.runLater(() -> {
+                    String previousText = warningLabel.getText();
+                    warningLabel.setText(answerSup);
+                    PauseTransition wait = new PauseTransition(Duration.seconds(1));
+                    wait.setOnFinished(event -> {
+                        warningLabel.setText(previousText);
+                    });
+                    wait.play();
+                });
                 return;
             }
             answer = (String) objInStream.readObject();
             if(answer.equals("OK")) {
                 EmailComplete sentEmail = (EmailComplete) objInStream.readObject();
                 System.out.println(sentEmail.toString());
-                user.sentEmailsProperty().add(sentEmail);
+                Platform.runLater(() -> {user.sentEmailsProperty().add(sentEmail);});
                 if(sentEmail.getDestinatari().contains(user.getEmailAddress()))
-                    user.inboxProperty().add(sentEmail);
+                    Platform.runLater(() -> {user.inboxProperty().add(sentEmail);});
             }else{
-                //TODO error handling
+                final String answerSup = answer;
+                Platform.runLater(() -> {
+                    String previousText = warningLabel.getText();
+                    warningLabel.setText(answerSup);
+                    PauseTransition wait = new PauseTransition(Duration.seconds(1));
+                    wait.setOnFinished(event -> {
+                        warningLabel.setText(previousText);
+                    });
+                    wait.play();
+                });
                 return;
             }
 

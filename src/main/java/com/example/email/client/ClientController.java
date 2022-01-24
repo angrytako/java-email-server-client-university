@@ -59,8 +59,6 @@ public class ClientController implements Initializable {
 
 
 
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -348,7 +346,7 @@ public class ClientController implements Initializable {
             if(socket==null){
                 warningInvio.setVisible(true);
             }else{
-                OutToServer invio = new OutToServer(emailToServer, utente, socket);
+                OutToServer invio = new OutToServer(emailToServer, utente, socket, warningInvio);
                 invio.start();
                 email.reset();
             }

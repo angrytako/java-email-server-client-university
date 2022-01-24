@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class ServeClient implements Runnable{
     private final static String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
-    private enum RequestType {DELETE,DELETE_INBOX,DELETE_SENT,CHECK, ERROR, SEND_EMAIL, GET_ALL, GET_IN, GET_OUT, GET_ALL_IN, GET_ALL_OUT };
+    private enum RequestType {DELETE,DELETE_INBOX,DELETE_SENT,CHECK, ERROR, SEND_EMAIL, GET_ALL };
     private Socket socket;
     private ObjectInputStream inObjStream;
     private OutputStream outputStream;
@@ -96,32 +96,7 @@ public class ServeClient implements Runnable{
                 outObjStream.writeObject(sentEmails);
                 break;
             }
-            case GET_ALL_IN: {
-                log.appendText("\n"+utente+": Get all inbox emails");
-                ArrayList<EmailComplete> inboxEmails = DAO.getAllEmails(utente,true);
-                outObjStream.writeObject(inboxEmails);
-                break;
-            }
-            case GET_ALL_OUT: {
-                log.appendText("\n"+utente+": Get all sent emails");
-                ArrayList<EmailComplete> sentEmails = DAO.getAllEmails(utente,false);
-                outObjStream.writeObject(sentEmails);
-                break;
-            }
-            case GET_IN: {
-                ArrayList<EmailComplete> inboxEmails = DAO.getAllEmails(utente,true);
-                String ID = getRequestEmailID(request);
-                log.appendText("\n"+utente+": Get all inbox emails after id " + ID);
-                outObjStream.writeObject(getEmailsAfterID(inboxEmails,ID));
-                break;
-            }
-            case GET_OUT: {
-                ArrayList<EmailComplete>  sentEmails = DAO.getAllEmails(utente,false);
-                String ID = getRequestEmailID(request);
-                log.appendText("\n"+utente+": Get all sent emails after id " + ID);
-                outObjStream.writeObject(getEmailsAfterID(sentEmails,ID));
-                break;
-            }
+
             case CHECK:{
                 outObjStream.writeObject("OK");
                 outObjStream.flush();
@@ -224,16 +199,6 @@ public class ServeClient implements Runnable{
             return RequestType.DELETE_INBOX;
         else if(request.equals("DELETE SENT"))
             return RequestType.DELETE_SENT;
-        else if(request.contains("GET IN FROM ")){
-            if(request.split(" ").length == 3 || request.split(" ")[3].equals(""))
-                return RequestType.GET_ALL_IN;
-            else return RequestType.GET_IN;
-        }
-        else if(request.contains("GET OUT FROM")){
-            if(request.split(" ").length == 3 || request.split(" ")[3].equals(""))
-                return RequestType.GET_ALL_OUT;
-            else return RequestType.GET_OUT;
-        }
         else return RequestType.ERROR;
     }
 

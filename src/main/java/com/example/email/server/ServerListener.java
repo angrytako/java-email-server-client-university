@@ -47,15 +47,10 @@ public class ServerListener extends Thread {
                 ServeClient client = new ServeClient(socket,log);
 
                 executor.execute(client);
-
-//                Thread thread = new Thread(client);
-//                thread.start();
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
-            System.out.println("ciao");
             executor.shutdown();
             if (serverSocket!=null)
                 try {
@@ -65,7 +60,7 @@ public class ServerListener extends Thread {
                 }
 
             while (!executor.isTerminated()) {
-                System.out.println("aaaaaaa");
+                System.out.println("end");
             }
             System.out.println("Finished all thread");
         }

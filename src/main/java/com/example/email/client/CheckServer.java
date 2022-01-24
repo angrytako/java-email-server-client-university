@@ -1,6 +1,7 @@
 package com.example.email.client;
 
 import com.example.email.model.EmailComplete;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -36,17 +37,21 @@ public class CheckServer extends Thread{
 
             Socket socket = ClientController.startServerConnection("localhost", 6868);
             if (socket == null) {
-                warning.set(true);
+                Platform.runLater(() -> {warning.set(true);});
                 System.out.println("Not Conneccted with server");
             }else{
                 if (!emails_recived){
                     clientController.getEmail(socket);
                     emails_recived=true;
-                    warning.set(false);
-                    warningInvio.set(false);
+                    Platform.runLater(() -> {
+                        warning.set(false);
+                        warningInvio.set(false);
+                    });
                 }else{
-                    warning.set(false);
-                    warningInvio.set(false);
+                    Platform.runLater(() -> {
+                        warning.set(false);
+                        warningInvio.set(false);
+                    });
                     try {
                         OutputStream outStream = socket.getOutputStream();
                         InputStream inStream = socket.getInputStream();
@@ -63,7 +68,7 @@ public class CheckServer extends Thread{
                             ArrayList<EmailComplete> newMails = (ArrayList<EmailComplete>) objInStream.readObject();
                             if (newMails==null) ;//System.out.println("No new mails");
                             else {
-                                clientController.utente.addEmailInbox(newMails);
+                                Platform.runLater(() -> {clientController.utente.addEmailInbox(newMails);});
                             }
                         }
                     } catch (IOException | ClassNotFoundException e) {
