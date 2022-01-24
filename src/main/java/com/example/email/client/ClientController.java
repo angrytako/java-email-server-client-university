@@ -113,12 +113,12 @@ public class ClientController implements Initializable {
                             ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
                             ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
                         }
-                        Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
-                            @Override
-                            public void uncaughtException(Thread th, Throwable ex) {
-                            }
-                        };
-                        deleteThread.setUncaughtExceptionHandler(h);
+//                        Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
+//                            @Override
+//                            public void uncaughtException(Thread th, Throwable ex) {
+//                            }
+//                        };
+                   //     deleteThread.setUncaughtExceptionHandler(h);
                         deleteThread.start();
                     }
                 }
@@ -251,12 +251,12 @@ public class ClientController implements Initializable {
                             ((TextArea) inspectedEmail.lookup("#bodyTA")).setText(selectedEmail.getTesto());
                             ((Label) inspectedEmail.lookup("#idLb")).setText("ID: " + selectedEmail.getID());
                         }
-                        Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
-                            @Override
-                            public void uncaughtException(Thread th, Throwable ex) {
-                            }
-                        };
-                        deleteThread.setUncaughtExceptionHandler(h);
+//                        Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
+//                            @Override
+//                            public void uncaughtException(Thread th, Throwable ex) {
+//                            }
+//                        };
+//                        deleteThread.setUncaughtExceptionHandler(h);
                         deleteThread.start();
                     }
 

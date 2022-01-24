@@ -1,5 +1,6 @@
 package com.example.email.model;
 
+import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -35,57 +36,68 @@ public class Utente {
         return sentEmails;
     }
 
-    public synchronized LocalDateTime getLocalDateTimeLastEmailInbox(){
-        if (inbox.size()==0) return null;
-        return inbox.get(inbox.size()-1).getData();
+    public synchronized LocalDateTime getLocalDateTimeLastEmailInbox() {
+        if (inbox.size() == 0) return null;
+        return inbox.get(inbox.size() - 1).getData();
     }
 
-    public synchronized void addEmailInbox(ArrayList<EmailComplete> inbox){
+    public synchronized void addEmailInbox(ArrayList<EmailComplete> inbox) {
         this.inbox.addAll(inbox);
     }
-    public synchronized void addEmailSent(ArrayList<EmailComplete> sent){
+
+    public synchronized void addEmailSent(ArrayList<EmailComplete> sent) {
         this.sentEmails.addAll(sent);
     }
 
-    public synchronized void deleteEmail(EmailComplete emailToDelete){
+    public synchronized void deleteEmail(EmailComplete emailToDelete) {
 
-        EmailComplete toDelete=null;
+        EmailComplete toDelete = null;
 
-        if(emailToDelete.getMittente().equals(emailAddress))
-        {
-            for (EmailComplete email:sentEmails) {
+        if (emailToDelete.getMittente().equals(emailAddress)) {
+            for (EmailComplete email : sentEmails) {
                 if (email.getID().equals(emailToDelete.getID())) {
-                    toDelete=email;
+                    toDelete = email;
                 }
             }
-            if(toDelete!=null)sentEmails.removeAll(toDelete);
+            EmailComplete finalToDelete2 = toDelete;
+            Platform.runLater(() -> {
+                if (finalToDelete2 != null)
+                    sentEmails.removeAll(finalToDelete2);
+            });
 
             String[] receivers = emailToDelete.getDestinatari().split(",");
-            for(String receiver : receivers){
-                if(receiver.equals(emailAddress)) {
-                    toDelete=null;
-                    for (EmailComplete email:inbox) {
+            for (String receiver : receivers) {
+                if (receiver.equals(emailAddress)) {
+                    toDelete = null;
+                    for (EmailComplete email : inbox) {
                         if (email.getID().equals(emailToDelete.getID())) {
-                            toDelete=email;
+                            toDelete = email;
                         }
                     }
-                    if(toDelete!=null)inbox.removeAll(toDelete);
+                    EmailComplete finalToDelete1 = toDelete;
+                    Platform.runLater(() -> {
+                            if (finalToDelete1 != null)
+                                inbox.removeAll(finalToDelete1);
+                        });
+
+
                 }
             }
-        }
-        else
-        {
-            for (EmailComplete email:inbox) {
+        } else {
+            for (EmailComplete email : inbox) {
                 if (email.getID().equals(emailToDelete.getID())) {
-                    toDelete=email;
+                    toDelete = email;
                 }
             }
-            if(toDelete!=null)inbox.removeAll(toDelete);
+            EmailComplete finalToDelete = toDelete;
+            Platform.runLater(() -> {
+                if (finalToDelete != null)
+                    inbox.removeAll(finalToDelete);
+            });
         }
 
 
     }
 
 
-
-    }
+}
